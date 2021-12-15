@@ -2,9 +2,10 @@
 module.exports = {
   theme: {
     color: '#13c2c2',
-    mode: 'dark',
+    mode: 'light',
   },
   layout: 'head',
+  pageWidth: 'fluid',                   //内容区域宽度，fixed:固定宽度，fluid:流式宽度
   multiPage: false,
   animate: {
     name: 'lightSpeed',
