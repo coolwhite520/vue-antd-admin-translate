@@ -13,6 +13,7 @@
       <div :class="['admin-header-right', headerTheme]">
           <header-notice class="header-item"/>
           <header-avatar class="header-item"/>
+        <span>V {{version}}</span>
       </div>
     </div>
   </a-layout-header>
@@ -31,6 +32,7 @@ export default {
   props: ['collapsed', 'menuData'],
   data() {
     return {
+      version: require("@/../package.json").version,
       langList: [
         {key: 'CN', name: '简体中文', alias: '简体'},
         {key: 'HK', name: '繁體中文', alias: '繁體'},
