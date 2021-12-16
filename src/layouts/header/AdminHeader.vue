@@ -1,7 +1,7 @@
 <template>
   <a-layout-header :class="[headerTheme, 'admin-header']">
     <div :class="['admin-header-wide', layout, pageWidth]">
-      <router-link v-if="isMobile || layout === 'head'" to="/" :class="['logo', isMobile ? null : 'pc', headerTheme]">
+      <router-link v-if="isMobile || layout === 'head'" to="/translate" :class="['logo', isMobile ? null : 'pc', headerTheme]">
         <img width="32" src="@/assets/img/logo.png" />
         <h1 v-if="!isMobile">{{systemName}}</h1>
       </router-link>
@@ -13,7 +13,7 @@
       <div :class="['admin-header-right', headerTheme]">
           <header-notice class="header-item"/>
           <header-avatar class="header-item"/>
-        <span>V {{version}}</span>
+        <span>v{{version}}</span>
       </div>
     </div>
   </a-layout-header>

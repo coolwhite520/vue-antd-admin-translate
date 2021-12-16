@@ -35,6 +35,14 @@ const options = {
           component: () => import('@/pages/translate'),
         },
         {
+          path: 'activation',
+          name: '激活',
+          meta: {
+            invisible: true,
+          },
+          component: () => import('@/pages/activation'),
+        },
+        {
           path: 'history',
           name: '历史记录',
           meta: {

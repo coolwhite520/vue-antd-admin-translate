@@ -16,7 +16,6 @@
               <a-input
                 autocomplete="autocomplete"
                 size="large"
-                placeholder="admin"
                 v-decorator="['name', {rules: [{ required: true, message: '请输入账户名', whitespace: true}]}]"
               >
                 <a-icon slot="prefix" type="user" />
@@ -25,7 +24,6 @@
             <a-form-item>
               <a-input
                 size="large"
-                placeholder="888888"
                 autocomplete="autocomplete"
                 type="password"
                 v-decorator="['password', {rules: [{ required: true, message: '请输入密码', whitespace: true}]}]"
@@ -74,10 +72,9 @@
 </template>
 
 <script>
-import CommonLayout from '@/layouts/CommonLayout'
-import {login, getRoutesConfig} from '@/services/user'
+import CommonLayout from "@/layouts/CommonLayout"
+import {login} from '@/services/user'
 import {setAuthorization} from '@/utils/request'
-import {loadRoutes} from '@/utils/routerUtil'
 import {mapMutations} from 'vuex'
 
 export default {
@@ -101,31 +98,38 @@ export default {
       e.preventDefault()
       this.form.validateFields((err) => {
         if (!err) {
-          this.logging = true
+          this.loading = true
           const name = this.form.getFieldValue('name')
           const password = this.form.getFieldValue('password')
-          login(name, password).then(this.afterLogin)
+          login(name, password)
+              .then(res => {
+                console.log(res)
+                if (res.data.code !== 200) {
+                  this.$message.error(res.data.msg);
+                  this.loading = false;
+                  return;
+                }
+                this.afterLogin(res);
+              })
+              .catch((err) => {
+                this.$message.error(err.message)
+                this.loading = false;
+              })
         }
       })
     },
     afterLogin(res) {
       this.logging = false
-      const loginRes = res.data
-      if (loginRes.code >= 0) {
-        const {user, permissions, roles} = loginRes.data
+      if (res.data.code === 200) {
+        const {user} = res.data
         this.setUser(user)
-        this.setPermissions(permissions)
-        this.setRoles(roles)
-        setAuthorization({token: loginRes.data.token, expireAt: new Date(loginRes.data.expireAt)})
-        // 获取路由配置
-        getRoutesConfig().then(result => {
-          const routesConfig = result.data.data
-          loadRoutes(routesConfig)
-          this.$router.push('/translate')
-          this.$message.success(loginRes.message, 3)
-        })
+        let tokenObj = {
+          token: res.headers['authorization'],
+        }
+        setAuthorization(tokenObj)
+        this.$router.push('/translate')
       } else {
-        this.error = loginRes.message
+        this.$message.error(res.data.msg)
       }
     }
   }

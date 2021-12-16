@@ -4,7 +4,7 @@ import Cookie from 'js-cookie'
 // 跨域认证信息 header 名
 const xsrfHeaderName = 'Authorization'
 
-axios.defaults.timeout = 5000
+axios.defaults.timeout = 1000 * 60 * 10
 axios.defaults.withCredentials= true
 axios.defaults.xsrfHeaderName= xsrfHeaderName
 axios.defaults.xsrfCookieName= xsrfHeaderName
@@ -31,13 +31,17 @@ const METHOD = {
  * @returns {Promise<AxiosResponse<T>>}
  */
 async function request(url, method, params, config) {
+  console.log(url)
   switch (method) {
     case METHOD.GET:
       return axios.get(url, {params, ...config})
     case METHOD.POST:
       return axios.post(url, params, config)
-    default:
-      return axios.get(url, {params, ...config})
+    case METHOD.DELETE:
+      // 类似于get
+      return axios.delete(url, { params, ...config})
+    case METHOD.PUT:
+      return axios.put(url, params, config)
   }
 }
 
@@ -49,7 +53,7 @@ async function request(url, method, params, config) {
 function setAuthorization(auth, authType = AUTH_TYPE.BEARER) {
   switch (authType) {
     case AUTH_TYPE.BEARER:
-      Cookie.set(xsrfHeaderName, 'Bearer ' + auth.token, {expires: auth.expireAt})
+      Cookie.set(xsrfHeaderName, auth.token, {expires: auth.expireAt})
       break
     case AUTH_TYPE.BASIC:
     case AUTH_TYPE.AUTH1:

@@ -1,7 +1,10 @@
 <template>
   <div>
     <a-row>
-      <a-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+      <a-col :xs="0" :sm="0" :md="3" :lg="3" :xl="3">
+        &nbsp;
+      </a-col>
+      <a-col :xs="24" :sm="24" :md="18" :lg="18" :xl="18">
         <!--          翻译类别-->
         <div>
           <a-radio-group :default-value="radioType" button-style="solid" @change="handleChangeRadio">
@@ -36,100 +39,65 @@
               </a-tabs>
             </a-col>
           </a-row>
-          <!--          文本翻译窗口-->
-          <template v-if="radioType==='text'">
-            <a-row :gutter=[12,12]>
-              <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                <a-textarea
-                    placeholder="Autosize height with minimum and maximum number of lines"
-                    :auto-size="{ minRows: 10, maxRows: 20 }"
-                    :allowClear="true"
-                />
-              </a-col>
-              <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                <a-textarea
-                    placeholder="Autosize height with minimum and maximum number of lines"
-                    :auto-size="{ minRows: 10, maxRows: 20 }"
-                    :allowClear="true"
-                />
-              </a-col>
-            </a-row>
-          </template>
-          <template v-else-if="radioType==='file'">
-            <!--          文件翻译窗口-->
-            <a-row :gutter=[12,12]>
-              <a-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-                <a-card style="text-align:center;">
-                  <a-upload-dragger
-                      name="file"
-                      :multiple="false"
-                      action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                      @change="handleChangeFile"
-                  >
-                    <p class="ant-upload-drag-icon">
-                      <a-icon type="file-text" />
-                    </p>
-                    <p class="ant-upload-text">
-                      点击或拖拽到此区域
-                    </p>
-                    <p class="ant-upload-hint">
-                      文档支持格式：.txt、.doc、.docx、.odf、.pdf、.ppt、.pptx、.ps、.rtf、.xls、.xlsx 等
-                    </p>
-                    <p class="ant-upload-hint">
-                      图片支持格式：.png、.bmp、.jpg、.jpeg、.gif 等
-                    </p>
-                  </a-upload-dragger>
-                </a-card>
-              </a-col>
-            </a-row>
-          </template>
+<!--          根据radioType进行判断-->
+          <div v-show="radioType==='text'">
+            <translate-content :srcLang="srcLang" :desLang="desLang"/>
+          </div>
+          <div v-show="radioType==='file'">
+            <translate-file :srcLang="srcLang" :desLang="desLang"/>
+          </div>
+          <div v-show="radioType==='history'">
 
+          </div>
         </a-card>
+      </a-col>
+      <a-col :xs="0" :sm="0" :md="3" :lg="3" :xl="3">
+        &nbsp;
       </a-col>
     </a-row>
   </div>
 </template>
-
 <script>
 
 import {mapState} from 'vuex'
-import {request, METHOD} from '@/utils/request'
+import {GetTransLangList} from "../../services/translate";
+import TranslateContent from "./TranslateContent";
+import TranslateFile from "./TranslateFile";
+
+
 
 export default {
   name: 'WorkPlace',
+  components: {TranslateFile, TranslateContent},
   i18n: require('./i18n'),
   data() {
     return {
       radioType: "text",
-      languageList: [{
-        en_name: "English",
-        cn_name: "英语"
-      }, {
-        en_name: "Chinese",
-        cn_name: "中文(简体)"
-      }, {
-        en_name: "Japanese",
-        cn_name: "日语"
-      }],
-      srcLang: "English",
-      desLang: "Chinese",
+      languageList: [],
+      srcLang: "",
+      desLang: "",
+      isServerException: false,
     }
   },
   computed: {
     ...mapState('account', {currUser: 'user'}),
-    ...mapState('setting', ['lang'])
   },
   created() {
-    request('/user/welcome', METHOD.GET).then(res => this.welcome = res.data)
-    request('/work/activity', METHOD.GET).then(res => this.activities = res.data)
-    request('/work/team', METHOD.GET).then(res => this.teams = res.data)
-    request('/project', METHOD.GET).then(res => {
-      this.projects = res.data
-      this.loading = false
-    })
-  },
-  mounted() {
-
+    GetTransLangList().then((res) => {
+      if (res.data.code !== 200) {
+        this.$message.warning(res.data.msg)
+        return
+      }
+      this.languageList = res.data.data
+      if (this.languageList.length < 2) {
+        this.$message.warning("获取的支持语言列表错误")
+        return
+      }
+      this.srcLang = this.languageList[0].en_name;
+      this.desLang = this.languageList[1].en_name;
+    }).catch( err => {
+      this.$message.warning(err)
+    });
   },
   methods: {
     handleChangeRadio(e) {
@@ -146,7 +114,6 @@ export default {
           }
         }
       }
-      console.log(this.srcLang, this.desLang)
     },
     onChangeDesLanguage(activeKey) {
       this.desLang = activeKey
@@ -158,19 +125,8 @@ export default {
           }
         }
       }
-      console.log(this.srcLang, this.desLang)
     },
-    handleChangeFile(info) {
-      const status = info.file.status;
-      if (status !== 'uploading') {
-        console.log(info.file, info.fileList);
-      }
-      if (status === 'done') {
-        this.$message.success(`${info.file.name} file uploaded successfully.`);
-      } else if (status === 'error') {
-        this.$message.error(`${info.file.name} file upload failed.`);
-      }
-    },
+
   }
 }
 </script>

@@ -7,7 +7,7 @@
 <script>
 
 import {mapState} from 'vuex'
-import {request, METHOD} from '@/utils/request'
+
 
 export default {
   name: 'WorkPlace',
@@ -30,13 +30,7 @@ export default {
     ...mapState('setting', ['lang'])
   },
   created() {
-    request('/user/welcome', METHOD.GET).then(res => this.welcome = res.data)
-    request('/work/activity', METHOD.GET).then(res => this.activities = res.data)
-    request('/work/team', METHOD.GET).then(res => this.teams = res.data)
-    request('/project', METHOD.GET).then(res => {
-        this.projects = res.data
-        this.loading = false
-      })
+
   }
 }
 </script>
