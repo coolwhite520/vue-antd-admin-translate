@@ -78,7 +78,7 @@ export default {
         })(this.outContent);
         document.execCommand('Copy');
       }
-      this.$message.success("成功复制到剪切板")
+      this.$message.success("成功复制到剪贴板")
     },
     handleClickTransContent() {
       if (this.content === "") {

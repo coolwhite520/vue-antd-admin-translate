@@ -59,7 +59,7 @@ export default {
         })(this.machineId);
         document.execCommand('Copy');
       }
-      this.$message.success("成功复制到剪切板")
+      this.$message.success("成功复制到剪贴板")
     },
     handleClickActivation() {
       if (this.keystore === "") {
