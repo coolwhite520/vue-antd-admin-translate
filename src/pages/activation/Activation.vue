@@ -5,7 +5,7 @@
     </a-col>
     <a-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
       <div v-if="!activationOk">
-        <span>平台机序列号：</span> <b>{{machineId}}</b>&nbsp;
+        <span>平台序列号：</span> <b>{{machineId}}</b>&nbsp;
         <a-tooltip>
           <template slot="title">
             <span>点击复制机器码</span>

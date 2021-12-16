@@ -42,15 +42,6 @@ const options = {
           },
           component: () => import('@/pages/activation'),
         },
-        {
-          path: 'history',
-          name: '历史记录',
-          meta: {
-            invisible: true,
-            icon: 'history'
-          },
-          component: () => import('@/pages/history'),
-        },
       ]
     },
   ]
