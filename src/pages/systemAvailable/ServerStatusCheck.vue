@@ -33,7 +33,7 @@ export default {
   mounted() {
     let loop = setInterval(()=> {
       this.dots = this.dots + "."
-      if (this.dots.length >=3) {
+      if (this.dots.length >3) {
         this.dots = ""
       }
       GetTransLangList().then((res)=> {

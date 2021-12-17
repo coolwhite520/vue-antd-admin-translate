@@ -3,13 +3,21 @@ import {
     PostTransContentApi,
     PostTransUploadFileApi,
     PostTransFileApi,
-    PostTransDownFileApi
+    PostTransDownFileApi,
+    GetAllRecordsApi
 } from '@/services/api'
 
 import {request, METHOD,} from '@/utils/request'
 
 export async function GetTransLangList() {
     return request(GetTransLangListApi, METHOD.GET)
+}
+export async function GetAllRecords() {
+    return request(GetAllRecordsApi, METHOD.GET)
+}
+
+export async function GetRecordsByType(type) {
+    return request(GetAllRecordsApi + "/" + type , METHOD.GET)
 }
 
 export async function PostTransContent(obj) {

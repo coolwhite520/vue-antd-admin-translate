@@ -40,14 +40,14 @@
             </a-col>
           </a-row>
 <!--          根据radioType进行判断-->
-          <div v-show="radioType==='text'">
+          <div v-if="radioType==='text'">
             <translate-content :srcLang="srcLang" :desLang="desLang"/>
           </div>
-          <div v-show="radioType==='file'">
+          <div v-else-if="radioType==='file'">
             <translate-file :langList="languageList"/>
           </div>
-          <div v-show="radioType==='history'">
-
+          <div v-else-if="radioType==='history'">
+            <history />
           </div>
         </a-card>
       </a-col>
@@ -63,12 +63,13 @@ import {mapState} from 'vuex'
 import {GetTransLangList} from "../../services/translate";
 import TranslateContent from "./TranslateContent";
 import TranslateFile from "./TranslateFile";
+import History from "../history/history";
 
 
 
 export default {
   name: 'WorkPlace',
-  components: {TranslateFile, TranslateContent},
+  components: {History, TranslateFile, TranslateContent},
   i18n: require('./i18n'),
   data() {
     return {

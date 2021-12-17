@@ -20,6 +20,22 @@ Vue.config.productionTip = false
 Vue.use(Viser)
 Vue.use(Plugins)
 
+Vue.prototype.$copy =(content)=>{
+  if (window.clipboardData) {
+    window.clipboardData.setData('text', content);
+  } else {
+    (function(s) {
+      document.oncopy = function(e) {
+        e.clipboardData.setData('text',  s);
+        e.preventDefault();
+        document.oncopy = null;
+      }
+    })(content);
+    document.execCommand('Copy');
+  }
+}
+
+
 bootstrap({router, store, i18n, message: Vue.prototype.$message})
 
 new Vue({

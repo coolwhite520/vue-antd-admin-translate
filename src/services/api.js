@@ -9,5 +9,6 @@ module.exports = {
   PostTransContentApi: `${BASE_URL}/api/translate/content`,
   PostTransUploadFileApi: `${BASE_URL}/api/translate/upload`,
   PostTransFileApi: `${BASE_URL}/api/translate/file`,
-  PostTransDownFileApi: `${BASE_URL}/api/translate/down`
+  PostTransDownFileApi: `${BASE_URL}/api/translate/down`,
+  GetAllRecordsApi: `${BASE_URL}/api/translate/records`,
 }

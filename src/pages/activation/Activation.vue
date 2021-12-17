@@ -47,18 +47,7 @@ export default {
   },
   methods: {
     handleClickCopy() {
-      if (window.clipboardData) {
-        window.clipboardData.setData('text', this.machineId);
-      } else {
-        (function(s) {
-          document.oncopy = function(e) {
-            e.clipboardData.setData('text',  s);
-            e.preventDefault();
-            document.oncopy = null;
-          }
-        })(this.machineId);
-        document.execCommand('Copy');
-      }
+      this.$copy(this.machineId)
       this.$message.success("成功复制到剪贴板")
     },
     handleClickActivation() {

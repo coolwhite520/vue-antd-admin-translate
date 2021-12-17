@@ -10,6 +10,7 @@
               :remove="handleRemove"
               :before-upload="beforeUpload"
               listType="text"
+              @change="handleChange"
           >
             <a-row>
               <a-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
@@ -93,12 +94,6 @@ const columns = [
     align: 'center'
   },
   {
-    title: '类型',
-    dataIndex: 'content_type',
-    scopedSlots: {customRender: 'content_type'},
-    align: 'center'
-  },
-  {
     title: '源语言',
     dataIndex: 'src_lang',
     scopedSlots: {customRender: 'src_lang'},
@@ -136,6 +131,9 @@ export default {
     }
   },
   methods: {
+    handleChange(info) {
+      console.log(info)
+    },
     handleRemove(file) {
       console.log("remove")
       const index = this.fileList.indexOf(file);

@@ -11,7 +11,7 @@
         <i-menu class="head-menu" :theme="headerTheme" mode="horizontal" :options="menuData" @select="onSelect"/>
       </div>
       <div :class="['admin-header-right', headerTheme]">
-          <header-notice class="header-item"/>
+<!--          <header-notice class="header-item"/>-->
           <header-avatar class="header-item"/>
         <span>v{{version}}</span>
       </div>
@@ -21,14 +21,13 @@
 
 <script>
 
-import HeaderNotice from './HeaderNotice'
 import HeaderAvatar from './HeaderAvatar'
 import IMenu from '@/components/menu/menu'
 import {mapState, mapMutations} from 'vuex'
 
 export default {
   name: 'AdminHeader',
-  components: {IMenu, HeaderAvatar, HeaderNotice},
+  components: {IMenu, HeaderAvatar},
   props: ['collapsed', 'menuData'],
   data() {
     return {
