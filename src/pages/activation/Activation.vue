@@ -77,7 +77,7 @@ export default {
           this.keystore = ""
           return;
         }
-        this.$router.push("/translate")
+        this.$router.push("/systemAvailable")
       })
       .catch(err => {
         this.$message.error(err.message)

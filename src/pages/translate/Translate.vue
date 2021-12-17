@@ -21,7 +21,7 @@
         </div>
         <a-card style="border-radius: 10px;margin-top: 20px;box-shadow:1px 0px 10px 1px #8792a8;">
           <!--         语言列表-->
-          <a-row :gutter=[12,12]>
+          <a-row :gutter=[12,12] v-show="radioType==='text'">
             <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
               <a-tabs :activeKey="srcLang" @change="onChangeSrcLanguage">
                 <template v-for="item of languageList">
@@ -44,7 +44,7 @@
             <translate-content :srcLang="srcLang" :desLang="desLang"/>
           </div>
           <div v-show="radioType==='file'">
-            <translate-file :srcLang="srcLang" :desLang="desLang"/>
+            <translate-file :langList="languageList"/>
           </div>
           <div v-show="radioType==='history'">
 

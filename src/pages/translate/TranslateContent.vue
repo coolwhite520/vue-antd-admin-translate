@@ -53,6 +53,9 @@ export default {
   created() {
 
   },
+  mounted() {
+    this.$refs.inputText.focus();
+  },
   methods: {
     onChangeContent() {
       this.outContent = ""
