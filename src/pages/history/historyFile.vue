@@ -10,7 +10,7 @@
     </div>
     <a-table :scroll="{ x: 1200, y: 300 }"
              :pagination="false"
-             :columns="columnsImage"
+             :columns="columns"
              :data-source="tableData"
              rowKey="id" style="margin-top: 20px;"
              size="small">
@@ -53,11 +53,14 @@
       </template>
 
       <template slot="state_describe" slot-scope="text, record">
-        <div v-if="record.state === TranslateStatus.TransTranslateSuccess" style="color: #52c41a;">
+        <div
+            v-if="record.state === TranslateStatus.TransTranslateSuccess || record.state === TranslateStatus.TransExtractSuccessContentEmpty"
+            style="color: #52c41a;">
           {{ text }}
         </div>
-        <div v-else-if="record.state === TranslateStatus.TransTranslateFailed || record.state === TranslateStatus.TransExtractFailed"
-             style="color: #f5222f;">
+        <div
+            v-else-if="record.state === TranslateStatus.TransTranslateFailed || record.state === TranslateStatus.TransExtractFailed"
+            style="color: #f5222f;">
           {{ text }}
         </div>
         <div v-else style="color: #faad14;">
@@ -80,15 +83,16 @@
               </a>
             </a-tooltip>
           </template>
-          <template v-if="record.state === TranslateStatus.TransExtractFailed || record.state === TranslateStatus.TransTranslateFailed">
+          <template
+              v-if="record.state === TranslateStatus.TransExtractFailed || record.state === TranslateStatus.TransTranslateFailed">
             <a-tooltip title="再次尝试翻译">
               <a @click="() => handleClickTranslate(record)" style="margin-right: 20px;">
-                <a-icon type="redo" />
+                <a-icon type="redo"/>
               </a>
             </a-tooltip>
             <a-popover title="失败信息">
               <template slot="content">
-                <p>{{record.error}}</p>
+                <p>{{ record.error }}</p>
               </template>
               <a-icon type="search" style="color: #f5222f"/>
             </a-popover>
@@ -128,68 +132,13 @@
 import {GetRecordsByType, PostDeleteRecord, PostTransDownFile, PostTransFile} from "../../services/translate";
 import TranslateStatus from "../../utils/translateStatus";
 
-const columnsImage = [
-  {
-    title: '开始时间',
-    dataIndex: 'create_at',
-    ellipsis: true,
-    align: 'center',
-    width: 200,
-    fixed: 'left'
-  },
-  {
-    title: '原始文档',
-    dataIndex: 'file_name',
-    scopedSlots: {customRender: 'file_name'},
-    ellipsis: true,
-    align: 'center'
-  },
-  {
-    title: '文档内容',
-    dataIndex: 'file_content',
-    scopedSlots: {customRender: 'file_content'},
-    ellipsis: true,
-    align: 'center'
-  },
-  {
-    title: '语言',
-    dataIndex: 'lang',
-    scopedSlots: {customRender: 'lang'},
-    ellipsis: true,
-    width: 300,
-    align: 'center',
-  },
-  {
-    title: '翻译结果',
-    dataIndex: 'file_trans',
-    scopedSlots: {customRender: 'file_trans'},
-    align: 'center',
-    ellipsis: true,
-  },
-  {
-    title: '翻译进度',
-    dataIndex: 'state_describe',
-    scopedSlots: {customRender: 'state_describe'},
-    align: 'center',
-    ellipsis: true,
-  },
-  {
-    title: '操作',
-    dataIndex: 'operation',
-    scopedSlots: {customRender: 'operation'},
-    align: 'center',
-    width: 100,
-    fixed: 'right',
-  },
-];
 
 export default {
-  name: "historyDocFile",
-  props: ["langList"],
+  name: "historyFile",
+  props: ["langList", "hisType", "columns"],
   data() {
     return {
       TranslateStatus,
-      columnsImage,
       tableData: [],
       loading: false,
       autoFresh: false,
@@ -225,7 +174,7 @@ export default {
       return false
     },
     fetchTableData() {
-      GetRecordsByType(2, (this.current - 1) * this.pageSize, this.pageSize).then(res => {
+      GetRecordsByType(this.hisType, (this.current - 1) * this.pageSize, this.pageSize).then(res => {
         if (res.data.code !== 200) {
           this.$message.warning(res.data.msg);
           this.autoFresh = false
@@ -244,7 +193,7 @@ export default {
                 break
               }
             }
-            if(isAllOver) this.autoFresh = false
+            if (isAllOver) this.autoFresh = false
           }
         } else {
           this.tableData = []
@@ -352,7 +301,8 @@ export default {
         des_lang: item.des_lang,
         record_id: item.id,
       }
-      item.state = TranslateStatus.TransBeginTranslate
+      item.state = TranslateStatus.TransBeginExtract
+      item.state_describe = "正在抽取文件内容"
       this.autoFresh = true
       this.isManualClickAutoFresh = false
       PostTransFile(obj)

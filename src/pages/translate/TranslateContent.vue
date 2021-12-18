@@ -8,7 +8,8 @@
             :allowClear="true"
             v-model="content"
             size="large"
-            :maxLength="2000"
+            :maxLength="maxLength"
+            placeholder="最大支持500个字符"
             @change="onChangeContent"
         />
 
@@ -48,6 +49,7 @@ export default {
       content: "",
       outContent: "",
       loading: false,
+      maxLength: 500,
     }
   },
   created() {
@@ -84,6 +86,7 @@ export default {
       this.$message.success("成功复制到剪贴板")
     },
     handleClickTransContent() {
+      this.content = this.content.trim()
       if (this.content === "") {
         this.$message.info("翻译输入框内容为空，请输入内容或粘贴内容")
         this.$refs.inputText.focus();

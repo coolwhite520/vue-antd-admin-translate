@@ -4,6 +4,7 @@ import {initRouter} from './router'
 import './theme/index.less'
 import Antd from 'ant-design-vue'
 import Viser from 'viser-vue'
+import QRCode from 'qrcode'
 // import '@/mock'
 import store from './store'
 import 'animate.css/source/animate.css'
@@ -32,6 +33,15 @@ Vue.prototype.$copy =(content)=>{
       }
     })(content);
     document.execCommand('Copy');
+  }
+}
+
+
+Vue.prototype.$GenerateQR = async text => {
+  try {
+    return await QRCode.toDataURL(text)
+  } catch (err) {
+    console.error(err)
   }
 }
 

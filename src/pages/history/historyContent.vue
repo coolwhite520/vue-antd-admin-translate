@@ -1,66 +1,67 @@
 <template>
-<div>
-  <a-table :scroll="{ y: 800 }"
-           :pagination="false"
-           :columns="columnsContent"
-           :data-source="tableData"
-           rowKey="id" style="margin-top: 20px;"
-           size="small">
-    <template slot="file_name" slot-scope="text, record">
-      <a @click="() => handleClickDownFile(record)" type="link">{{ text }}</a>
-    </template>
-
-    <template slot="lang" slot-scope="text, record">
-      {{record.src_lang}} -> {{record.des_lang}}
-    </template>
-    <template slot="state_describe" slot-scope="text, record">
-      <div v-if="record.state === TranslateStatus.TransTranslateSuccess" style="color: #52c41a;">
-        {{text}}
-      </div>
-      <div v-else style="color: #f5222f;">
-        {{text}}&nbsp;{{record.error}}
-      </div>
-    </template>
-
-    <template slot="operation" slot-scope="text, record">
-      <div style="text-align: center">
-        <a-tooltip title="复制这条记录">
-          <a @click="() => handleClickCopy(record)">
-            <a-icon type="copy"/>
-          </a>
-        </a-tooltip>
-        <a-tooltip title="删除此条记录">
-          <a @click="() => handleClickDelete(record)" style="margin-left: 20px;">
-            <a-icon type="delete"/>
-          </a>
-        </a-tooltip>
-
-      </div>
-    </template>
-  </a-table>
-  <div v-if="total > 0" style="text-align: right;margin-top: 10px;">
-    <a-pagination
-        v-model="current"
-        :page-size-options="pageSizeOptions"
-        :total="total"
-        show-size-changer
-        :page-size="pageSize"
-        @showSizeChange="onShowSizeChange"
-        size="small"
-    >
-      <template slot="buildOptionText" slot-scope="props">
-        <span v-if="props.value !== '50'">{{ props.value }}条/页</span>
-        <span v-if="props.value === '50'">全部</span>
+  <div>
+    <a-table :scroll="{ y: 800 }"
+             :pagination="false"
+             :columns="columnsContent"
+             :data-source="tableData"
+             rowKey="id" style="margin-top: 20px;"
+             size="small">
+      <template slot="file_name" slot-scope="text, record">
+        <a @click="() => handleClickDownFile(record)" type="link">{{ text }}</a>
       </template>
-    </a-pagination>
+
+      <template slot="lang" slot-scope="text, record">
+        {{ record.src_lang }} -> {{ record.des_lang }}
+      </template>
+      <template slot="state_describe" slot-scope="text, record">
+        <div v-if="record.state === TranslateStatus.TransTranslateSuccess" style="color: #52c41a;">
+          {{ text }}
+        </div>
+        <div v-else style="color: #f5222f;">
+          {{ text }}&nbsp;{{ record.error }}
+        </div>
+      </template>
+
+      <template slot="operation" slot-scope="text, record">
+        <div style="text-align: center">
+          <a-tooltip title="复制这条记录">
+            <a @click="() => handleClickCopy(record)">
+              <a-icon type="copy"/>
+            </a>
+          </a-tooltip>
+          <a-tooltip title="删除此条记录">
+            <a @click="() => handleClickDelete(record)" style="margin-left: 20px;">
+              <a-icon type="delete"/>
+            </a>
+          </a-tooltip>
+
+        </div>
+      </template>
+    </a-table>
+    <div v-if="total > 0" style="text-align: right;margin-top: 10px;">
+      <a-pagination
+          v-model="current"
+          :page-size-options="pageSizeOptions"
+          :total="total"
+          show-size-changer
+          :page-size="pageSize"
+          @showSizeChange="onShowSizeChange"
+          size="small"
+      >
+        <template slot="buildOptionText" slot-scope="props">
+          <span v-if="props.value !== '50'">{{ props.value }}条/页</span>
+          <span v-if="props.value === '50'">全部</span>
+        </template>
+      </a-pagination>
+    </div>
   </div>
-</div>
 </template>
 
 
 <script>
 import {GetRecordsByType, PostDeleteRecord, PostTransDownFile} from "../../services/translate";
 import TranslateStatus from "../../utils/translateStatus";
+
 const columnsContent = [
   {
     title: '开始时间',
@@ -105,9 +106,9 @@ export default {
       columnsContent,
       loading: false,
       tableData: [],
-      pageSizeOptions: ['10', '20', '30', '40', '50'],
+      pageSizeOptions: ['10', '20', '30', '40', '500'],
       current: 1,
-      pageSize: 4,
+      pageSize: 10,
       total: 0,
     }
   },
@@ -116,7 +117,7 @@ export default {
   },
   methods: {
     fetchTableData() {
-      GetRecordsByType(0, (this.current - 1) * this.pageSize, this.pageSize ).then(res => {
+      GetRecordsByType(0, (this.current - 1) * this.pageSize, this.pageSize).then(res => {
         if (res.data.code !== 200) {
           this.$message.warning(res.data.msg);
           return;
@@ -153,7 +154,7 @@ export default {
         }
         this.fetchTableData();
       })
-          .catch((err)=>{
+          .catch((err) => {
             this.$message.error(err.message);
             return;
           })
