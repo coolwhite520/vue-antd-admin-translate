@@ -4,7 +4,8 @@ import {
     PostTransUploadFileApi,
     PostTransFileApi,
     PostTransDownFileApi,
-    GetAllRecordsApi
+    GetAllRecordsApi,
+    PostDeleteRecordApi
 } from '@/services/api'
 
 import {request, METHOD,} from '@/utils/request'
@@ -16,8 +17,8 @@ export async function GetAllRecords() {
     return request(GetAllRecordsApi, METHOD.GET)
 }
 
-export async function GetRecordsByType(type) {
-    return request(GetAllRecordsApi + "/" + type , METHOD.GET)
+export async function GetRecordsByType(type, offset, count) {
+    return request(`${GetAllRecordsApi}/${type}/${offset}/${count} `, METHOD.GET)
 }
 
 export async function PostTransContent(obj) {
@@ -26,17 +27,15 @@ export async function PostTransContent(obj) {
 
 export async function PostTransUpload(formData) {
     return request(PostTransUploadFileApi, METHOD.POST, formData)
-    // return request(PostTransUploadFileApi, METHOD.POST, formData, {
-    //     headers: {
-    //         'Content-Type': 'multipart/form-data;boundary = ' + new Date().getTime()
-    //     }
-    // })
 }
 export async function PostTransFile(obj) {
     return request(PostTransFileApi, METHOD.POST, obj)
 }
-
-
 export async function PostTransDownFile(obj) {
     return request(PostTransDownFileApi, METHOD.POST, obj, {responseType: 'blob'})
 }
+
+export async function PostDeleteRecord(obj) {
+    return request(PostDeleteRecordApi, METHOD.POST, obj)
+}
+

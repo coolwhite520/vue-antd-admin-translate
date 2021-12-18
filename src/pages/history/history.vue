@@ -5,10 +5,10 @@
         <history-content/>
       </a-tab-pane>
       <a-tab-pane key="1" tab="图片">
-        <history-image/>
+        <history-image :langList="langList"/>
       </a-tab-pane>
       <a-tab-pane key="2" tab="文档">
-        <history-doc-file/>
+        <history-doc-file :langList="langList"/>
       </a-tab-pane>
 
     </a-tabs>
@@ -26,6 +26,7 @@ import HistoryImage from "./historyImage";
 export default {
   name: "history",
   components: {HistoryImage, HistoryDocFile, HistoryContent},
+  props: ["langList"]
 }
 </script>
 

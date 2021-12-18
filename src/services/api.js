@@ -11,4 +11,5 @@ module.exports = {
   PostTransFileApi: `${BASE_URL}/api/translate/file`,
   PostTransDownFileApi: `${BASE_URL}/api/translate/down`,
   GetAllRecordsApi: `${BASE_URL}/api/translate/records`,
+  PostDeleteRecordApi: `${BASE_URL}/api/translate/delete`,
 }

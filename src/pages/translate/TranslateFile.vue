@@ -114,7 +114,7 @@ const columns = [
 ];
 
 
-import {PostTransDownFile, PostTransFile, PostTransUpload} from "../../services/translate";
+import {PostDeleteRecord, PostTransDownFile, PostTransFile, PostTransUpload} from "../../services/translate";
 
 export default {
   name: "TranslateFile",
@@ -169,10 +169,21 @@ export default {
       })
     },
     handleClickDelete(item) {
-      const index = this.tableData.indexOf(item);
-      const newFileList = this.tableData.slice();
-      newFileList.splice(index, 1);
-      this.tableData = newFileList;
+      PostDeleteRecord({record_id: item.id}).then((res) => {
+        console.log(res)
+        if (res.data.code !== 200) {
+          this.$message.warning(res.data.msg);
+          return;
+        }
+        const index = this.tableData.indexOf(item);
+        const newFileList = this.tableData.slice();
+        newFileList.splice(index, 1);
+        this.tableData = newFileList;
+      })
+      .catch((err)=>{
+        this.$message.error(err.message);
+        return;
+      })
     },
     // 翻译
     handleClickTranslate(item) {
@@ -201,7 +212,10 @@ export default {
                   description: '可在【历史记录】中查看翻译进度',
                 }
             )
-            this.handleClickDelete(item)
+            const index = this.tableData.indexOf(item);
+            const newFileList = this.tableData.slice();
+            newFileList.splice(index, 1);
+            this.tableData = newFileList;
           })
           .catch((err) => {
             this.$message.error(err.message)

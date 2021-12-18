@@ -47,7 +47,7 @@
             <translate-file :langList="languageList"/>
           </div>
           <div v-else-if="radioType==='history'">
-            <history />
+            <history :langList="languageList"/>
           </div>
         </a-card>
       </a-col>

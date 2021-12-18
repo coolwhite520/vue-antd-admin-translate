@@ -1,7 +1,7 @@
 <template>
 <div>
   <a-table :scroll="{ y: 800 }"
-           v-show="this.tableData.length>0"
+           :pagination="false"
            :columns="columnsContent"
            :data-source="tableData"
            rowKey="id" style="margin-top: 20px;"
@@ -38,12 +38,28 @@
       </div>
     </template>
   </a-table>
+  <div v-if="total > 0" style="text-align: right;margin-top: 10px;">
+    <a-pagination
+        v-model="current"
+        :page-size-options="pageSizeOptions"
+        :total="total"
+        show-size-changer
+        :page-size="pageSize"
+        @showSizeChange="onShowSizeChange"
+        size="small"
+    >
+      <template slot="buildOptionText" slot-scope="props">
+        <span v-if="props.value !== '50'">{{ props.value }}条/页</span>
+        <span v-if="props.value === '50'">全部</span>
+      </template>
+    </a-pagination>
+  </div>
 </div>
 </template>
 
 
 <script>
-import { GetRecordsByType, PostTransDownFile} from "../../services/translate";
+import {GetRecordsByType, PostDeleteRecord, PostTransDownFile} from "../../services/translate";
 import TranslateStatus from "../../utils/translateStatus";
 const columnsContent = [
   {
@@ -87,23 +103,39 @@ export default {
     return {
       TranslateStatus,
       columnsContent,
-      tableData: []
+      loading: false,
+      tableData: [],
+      pageSizeOptions: ['10', '20', '30', '40', '50'],
+      current: 1,
+      pageSize: 4,
+      total: 0,
     }
   },
   created() {
-    GetRecordsByType(0).then(res => {
-      if (res.data.code !== 200) {
-        this.$message.warning(res.data.msg);
-        return;
-      }
-      if(res.data.data != null) {
-        this.tableData = res.data.data
-      }
-    }).catch((err) => {
-        this.$message.error(err.message)
-      })
+    this.fetchTableData()
   },
   methods: {
+    fetchTableData() {
+      GetRecordsByType(0, (this.current - 1) * this.pageSize, this.pageSize ).then(res => {
+        if (res.data.code !== 200) {
+          this.$message.warning(res.data.msg);
+          return;
+        }
+        let {list, total} = res.data.data
+        if (list !== null) {
+          this.tableData = list
+        } else {
+          this.tableData = []
+        }
+        this.total = total
+      }).catch((err) => {
+        this.$message.error(err.message)
+      })
+    },
+    onShowSizeChange(current, pageSize) {
+      this.pageSize = pageSize;
+      this.fetchTableData()
+    },
     handleClickCopy(item) {
       let content = `开始时间:${item.create_at} \r\n
 语言:${item.src_lang} -> ${item.des_lang}\r\n
@@ -114,10 +146,17 @@ export default {
       this.$message.success("已经复制到剪贴板")
     },
     handleClickDelete(item) {
-      const index = this.tableData.indexOf(item);
-      const newFileList = this.tableData.slice();
-      newFileList.splice(index, 1);
-      this.tableData = newFileList;
+      PostDeleteRecord({record_id: item.id}).then((res) => {
+        if (res.data.code !== 200) {
+          this.$message.warning(res.data.msg);
+          return;
+        }
+        this.fetchTableData();
+      })
+          .catch((err)=>{
+            this.$message.error(err.message);
+            return;
+          })
     },
     handleClickDownFile(item, type) {
       PostTransDownFile({id: item.id, type})
