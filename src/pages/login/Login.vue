@@ -87,6 +87,9 @@ export default {
       form: this.$form.createForm(this)
     }
   },
+  mounted() {
+
+  },
   computed: {
     systemName () {
       return this.$store.state.setting.systemName
