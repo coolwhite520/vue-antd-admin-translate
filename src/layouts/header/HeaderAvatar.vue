@@ -12,7 +12,7 @@
       </a-menu-item>
       <a-menu-item v-if="user.isSuper" @click="handleClickAdmin">
         <a-icon type="setting" />
-        <span>用户管理</span>
+        <span>系统管理</span>
       </a-menu-item>
       <a-menu-divider />
       <a-menu-item @click="logout">

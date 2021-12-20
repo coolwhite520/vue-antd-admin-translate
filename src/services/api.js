@@ -15,6 +15,7 @@ module.exports = {
   PostDeleteRecordApi: `${BASE_URL}/translate/delete`,
 
   GetAllUsersApi: `${BASE_URL}/users`,
+  PostRestartSysApi: `${BASE_URL}/users/restart`,
   PostAddUserApi: `${BASE_URL}/users`,
   PostModifyUserPwdApi: `${BASE_URL}/users/password`,
   DeleteUserApi: `${BASE_URL}/users`
