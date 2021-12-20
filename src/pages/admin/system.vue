@@ -1,9 +1,9 @@
 <template>
 <div>
   <a-card>
-    <div slot="title"><a-icon type="redo" />&nbsp;系统重启</div>
+    <div slot="title"><a-icon type="redo" />&nbsp;系统服务修复</div>
     <div style="text-align: center">
-      <a-button type="primary" style="width: 50%" @click="handleClickRestart">立即重启</a-button>
+      <a-button type="primary" style="width: 50%" @click="handleClickRepair" :loading="loading">立即修复</a-button>
     </div>
 
   </a-card>
@@ -53,13 +53,14 @@
 
 <script>
 import {request} from "../../utils/request";
-import {PostRestartSysApi} from "../../services/api"
+import {PostRepairSysApi} from "../../services/api"
 export default {
   name: "SystemManage",
   data() {
     return {
       fileList: [],
       uploading: false,
+      loading: false,
     }
   },
   methods: {
@@ -78,17 +79,21 @@ export default {
       this.fileList = [...this.fileList, file];
       return false;
     },
-    handleClickRestart() {
-        request(PostRestartSysApi, "post")
+    handleClickRepair() {
+      this.loading = true
+        request(PostRepairSysApi, "post")
       .then((res) => {
         if (res.data.code !== 200) {
           this.$message.warning(res.data.msg)
+          this.loading = false
           return;
         }
+        this.loading = false
         this.$message.success(res.data.msg);
       })
       .catch((err) => {
         this.$message.warning(err.message)
+        this.loading = false
         return;
       })
     },

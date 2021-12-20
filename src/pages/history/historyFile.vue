@@ -94,7 +94,7 @@
               <template slot="content">
                 <p>{{ record.error }}</p>
               </template>
-              <a-icon type="search" style="color: #f5222f"/>
+              <a-icon type="search" style="color: #f5222f;margin-right: 20px;"/>
             </a-popover>
           </template>
           <a-tooltip title="删除此条记录">

@@ -14,9 +14,9 @@ module.exports = {
   GetAllRecordsApi: `${BASE_URL}/translate/records`,
   PostDeleteRecordApi: `${BASE_URL}/translate/delete`,
 
-  GetAllUsersApi: `${BASE_URL}/users`,
-  PostRestartSysApi: `${BASE_URL}/users/restart`,
-  PostAddUserApi: `${BASE_URL}/users`,
-  PostModifyUserPwdApi: `${BASE_URL}/users/password`,
-  DeleteUserApi: `${BASE_URL}/users`
+  GetAllUsersApi: `${BASE_URL}/admin`,
+  PostRepairSysApi: `${BASE_URL}/admin/repair`,
+  PostAddUserApi: `${BASE_URL}/admin`,
+  PostModifyUserPwdApi: `${BASE_URL}/admin/password`,
+  DeleteUserApi: `${BASE_URL}/admin`
 }
