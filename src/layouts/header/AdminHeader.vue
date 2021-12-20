@@ -1,10 +1,10 @@
 <template>
   <a-layout-header :class="[headerTheme, 'admin-header']">
     <div :class="['admin-header-wide', layout, pageWidth]">
-      <router-link v-if="isMobile || layout === 'head'" to="/translate" :class="['logo', isMobile ? null : 'pc', headerTheme]">
+      <div  v-if="isMobile || layout === 'head'"  :class="['logo', isMobile ? null : 'pc', headerTheme]" @click="handleClickLogo">
         <img width="32" src="@/assets/img/logo.png" />
         <h1 v-if="!isMobile">{{systemName}}</h1>
-      </router-link>
+      </div>
       <a-divider v-if="isMobile" type="vertical" />
       <a-icon v-if="layout !== 'head'" class="trigger" :type="collapsed ? 'menu-unfold' : 'menu-fold'" @click="toggleCollapse"/>
       <div v-if="layout !== 'side' && !isMobile" class="admin-header-menu" :style="`width: ${menuWidth};`">
@@ -37,7 +37,7 @@ export default {
         {key: 'HK', name: '繁體中文', alias: '繁體'},
         {key: 'US', name: 'English', alias: 'English'}
       ],
-      searchActive: false
+      searchActive: false,
     }
   },
   computed: {
@@ -60,6 +60,14 @@ export default {
     }
   },
   methods: {
+    handleClickLogo() {
+      console.log(this.$route)
+      if (this.$route.path === '/translate') {
+        this.$router.go(0);
+      } else {
+        this.$router.push("/translate")
+      }
+    },
     toggleCollapse () {
       this.$emit('toggleCollapse')
     },

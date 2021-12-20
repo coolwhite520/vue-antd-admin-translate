@@ -108,7 +108,7 @@ export default {
               .then(res => {
                 console.log(res)
                 if (res.data.code !== 200) {
-                  this.$message.error(res.data.msg);
+                  this.$message.warning(res.data.msg);
                   this.loading = false;
                   return;
                 }

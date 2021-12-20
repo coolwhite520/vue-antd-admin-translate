@@ -20,7 +20,6 @@ const options = {
       name: '403',
       component: () => import('@/pages/exception/403'),
     },
-
     {
       path: '/',
       name: '首页',
@@ -50,6 +49,22 @@ const options = {
             invisible: true,
           },
           component: () => import('@/pages/systemAvailable/ServerStatusCheck'),
+        },
+        {
+          path: '/admin',
+          name: '用户管理',
+          meta: {
+            invisible: true,
+          },
+          component: () => import('@/pages/admin'),
+        },
+        {
+          path: '/self',
+          name: '个人中心',
+          meta: {
+            invisible: true,
+          },
+          component: () => import('@/pages/self'),
         },
       ]
     },

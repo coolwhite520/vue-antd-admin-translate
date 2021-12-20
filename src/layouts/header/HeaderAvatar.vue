@@ -6,13 +6,13 @@
       <span class="name">{{user.name}}</span>
     </div>
     <a-menu :class="['avatar-menu']" slot="overlay">
-      <a-menu-item>
+      <a-menu-item @click="handleClickSelfCenter">
         <a-icon type="user" />
         <span>个人中心</span>
       </a-menu-item>
-      <a-menu-item>
+      <a-menu-item v-if="user.isSuper" @click="handleClickAdmin">
         <a-icon type="setting" />
-        <span>设置</span>
+        <span>用户管理</span>
       </a-menu-item>
       <a-menu-divider />
       <a-menu-item @click="logout">
@@ -36,6 +36,21 @@ export default {
     logout() {
       logout()
       this.$router.push('/login')
+    },
+    handleClickAdmin() {
+      if (this.$route.path === "/admin") {
+        this.$router.go(0)
+      } else {
+        this.$router.push('/admin')
+      }
+
+    },
+    handleClickSelfCenter() {
+      if (this.$route.path === "/self") {
+        this.$router.go(0)
+      } else {
+        this.$router.push('/self')
+      }
     }
   }
 }

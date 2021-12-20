@@ -96,6 +96,7 @@ const respLoginExpired = {
     onFulfilled(response, options) {
         const {router} = options
         if (response.data.code === HttpStatus.HttpUserExpired ||
+            response.data.code === HttpStatus.HttpUserNoThisUserError ||
             response.data.code === HttpStatus.HttpUserNotLogin) {
             let {machineId} = response.data;
             router.push({

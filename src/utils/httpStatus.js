@@ -30,6 +30,7 @@ const HttpStatus = {
     HttpUsersExistSameUserNameError: -1027,
     HttpFileNotFoundError: -1028,
     HttpFileOpenError: -1029,
+    HttpUserNoThisUserError: -1030
 }
 
 export default HttpStatus;
