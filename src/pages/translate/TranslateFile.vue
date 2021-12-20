@@ -142,7 +142,15 @@ export default {
       this.fileList = newFileList;
     },
     beforeUpload(file) {
-      console.log("beforeUpload")
+      console.log("beforeUpload:", file)
+      if (file.size === 0) {
+        this.$message.warning(`${file.name} 为空文件，无法上传！`)
+        return false
+      }
+      if (file.size > 1024 * 1024 * 5) {
+        this.$message.warning(`${file.name} 大于5Mb，请上传小于5Mb的文件！`)
+        return false
+      }
       this.fileList = [...this.fileList, file];
       return false;
     },

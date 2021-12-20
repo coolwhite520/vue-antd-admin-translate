@@ -21,7 +21,7 @@ import HistoryFile from "./historyFile";
 
 const columnsImage = [
   {
-    title: '开始时间',
+    title: '时间',
     dataIndex: 'create_at',
     ellipsis: true,
     align: 'center',
@@ -77,7 +77,7 @@ const columnsImage = [
 
 const columnsDocFile = [
   {
-    title: '开始时间',
+    title: '时间',
     dataIndex: 'create_at',
     ellipsis: true,
     align: 'center',

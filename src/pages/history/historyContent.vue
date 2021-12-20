@@ -64,7 +64,7 @@ import TranslateStatus from "../../utils/translateStatus";
 
 const columnsContent = [
   {
-    title: '开始时间',
+    title: '时间',
     dataIndex: 'create_at',
     scopedSlots: {customRender: 'create_at'},
     align: 'center'
