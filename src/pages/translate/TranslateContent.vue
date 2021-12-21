@@ -9,7 +9,7 @@
             v-model="content"
             size="large"
             :maxLength="maxLength"
-            placeholder="最大支持500个字符"
+            :placeholder="placeholder"
             @change="onChangeContent"
         />
 
@@ -49,7 +49,12 @@ export default {
       content: "",
       outContent: "",
       loading: false,
-      maxLength: 500,
+      maxLength: 2000,
+    }
+  },
+  computed: {
+    placeholder() {
+      return `最大支持${this.maxLength}个字符`
     }
   },
   created() {
