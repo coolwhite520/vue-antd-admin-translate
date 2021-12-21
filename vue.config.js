@@ -35,25 +35,16 @@ const assetsCDN = {
 
 module.exports = {
     devServer: {
+        open: true, // 启动后在浏览器打开
         proxy: {
             '/api': { //此处要与 /services/api.js 中的 API_PROXY_PREFIX 值保持一致
                 target: process.env.VUE_APP_API_BASE_URL,
                 changeOrigin: true,
                 proxyTimeout: 10 * 60 * 1000,
-                ws: false,
-                timeout: 10 * 60 * 1000,
-                pathRewrite: {
-                    '^/api': ''
-                }
-            },
-            '/socket': { //此处要与 /services/api.js 中的 API_PROXY_PREFIX 值保持一致
-                target: "ws://localhost:7777",
-                changeOrigin: true,
-                proxyTimeout: 10 * 60 * 1000,
                 ws: true,
                 timeout: 10 * 60 * 1000,
                 pathRewrite: {
-                    '^/socket': '/'
+                    '^/api': ''
                 }
             },
         }

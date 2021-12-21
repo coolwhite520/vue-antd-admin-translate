@@ -53,9 +53,9 @@
 
 <script>
 import {request} from "../../utils/request";
-import {PostRepairSysApi, WebsocketURl} from "../../services/api"
+import {PostRepairSysApi} from "../../services/api"
 // import axios from "axios"
-const neffos = require('neffos.js');
+
 
 export default {
   name: "SystemManage",
@@ -103,60 +103,59 @@ export default {
       })
     },
 
-    async upload(file) {
-      try {
-        const conn = await neffos.dial(WebsocketURl, {
-          default: { // "default" namespace.
-            _OnNamespaceConnected: function (nsConn, msg) {
-              if (nsConn.conn.wasReconnected()) {
-                console.log("re-connected after " + nsConn.conn.reconnectTries.toString() + " trie(s)");
-              }
-              console.log("connected to namespace: " + msg.Namespace);
-            },
-            _OnNamespaceDisconnect: function (nsConn, msg) {
-              console.log("disconnected from namespace: " + msg.Namespace);
-            },
-            NewFile: function (nsConn, msg) { // "chat" event.
-              console.log(msg.Body);
-            },
-            WriteFile: function (nsConn, msg) { // "chat" event.
-              console.log(msg.Body);
-            },
-            CloseFile: function (nsConn, msg) { // "chat" event.
-              console.log(msg.Body);
-            }
-          }
-        }, { // optional.
-          reconnect: 2000,
-        });
-        console.log("begin conn")
-        const nsConn = await conn.connect("default");
-        let reqObj = {
-          file_name: "a.epub",
-          data: [],
-        }
-
-        nsConn.emit("NewFile", JSON.stringify(reqObj));
-        const stream = file.stream()
-        stream.on("data", (chunk) => {
-          nsConn.emit("WriteFile", chunk.toString("base64"));
-        })
-        stream.on("finish", () => {
-          nsConn.emit("CloseFile", JSON.stringify(reqObj));
-        })
-      } catch (err) {
-        console.error(err.message);
-      }
-    },
-    handleUploadUpdateFile() {
+    // async upload(file) {
+    //   try {
+    //     const conn = await neffos.dial("/api/ws/upload", {
+    //       default: { // "default" namespace.
+    //         _OnNamespaceConnected: function (nsConn, msg) {
+    //           if (nsConn.conn.wasReconnected()) {
+    //             console.log("re-connected after " + nsConn.conn.reconnectTries.toString() + " trie(s)");
+    //           }
+    //           console.log("connected to namespace: " + msg.Namespace);
+    //         },
+    //         _OnNamespaceDisconnect: function (nsConn, msg) {
+    //           console.log("disconnected from namespace: " + msg.Namespace);
+    //         },
+    //         NewFile: function (nsConn, msg) { // "chat" event.
+    //           console.log(msg.Body);
+    //         },
+    //         WriteFile: function (nsConn, msg) { // "chat" event.
+    //           console.log(msg.Body);
+    //         },
+    //         CloseFile: function (nsConn, msg) { // "chat" event.
+    //           console.log(msg.Body);
+    //         }
+    //       }
+    //     }, { // optional.
+    //       reconnect: 2000,
+    //     });
+    //     console.log("begin conn")
+    //     const nsConn = await conn.connect("default");
+    //     let reqObj = {
+    //       file_name: "a.epub",
+    //       data: [],
+    //     }
+    //
+    //     nsConn.emit("NewFile", JSON.stringify(reqObj));
+    //     const stream = file.stream()
+    //     stream.on("data", (chunk) => {
+    //       nsConn.emit("WriteFile", chunk.toString("base64"));
+    //     })
+    //     stream.on("finish", () => {
+    //       nsConn.emit("CloseFile", JSON.stringify(reqObj));
+    //     })
+    //   } catch (err) {
+    //     console.error(err.message);
+    //   }
+    // },
+    async handleUploadUpdateFile() {
       const {fileList} = this;
-      this.upload(fileList[0])
-      // const formData = new FormData();
-      // fileList.forEach(file => {
-      //   formData.append('file', file);
-      //   console.log(file)
-      // });
-
+      // await this.upload(fileList[0])
+      const formData = new FormData();
+      fileList.forEach(file => {
+        formData.append('file', file);
+        console.log(file)
+      });
 
       // axios({
       //   url: '/api/admin/upload',

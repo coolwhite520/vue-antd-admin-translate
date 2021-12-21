@@ -19,5 +19,4 @@ module.exports = {
   PostAddUserApi: `${BASE_URL}/admin`,
   PostModifyUserPwdApi: `${BASE_URL}/admin/password`,
   DeleteUserApi: `${BASE_URL}/admin`,
-  WebsocketURl: `/socket/upload`
 }
