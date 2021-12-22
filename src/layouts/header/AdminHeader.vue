@@ -13,7 +13,7 @@
       <div :class="['admin-header-right', headerTheme]">
 <!--          <header-notice class="header-item"/>-->
           <header-avatar class="header-item"/>
-        <span>v{{version}}</span>
+        <span>v{{user.sysVer}}</span>
       </div>
     </div>
   </a-layout-header>
@@ -23,7 +23,7 @@
 
 import HeaderAvatar from './HeaderAvatar'
 import IMenu from '@/components/menu/menu'
-import {mapState, mapMutations} from 'vuex'
+import {mapState, mapMutations, mapGetters} from 'vuex'
 
 export default {
   name: 'AdminHeader',
@@ -31,7 +31,6 @@ export default {
   props: ['collapsed', 'menuData'],
   data() {
     return {
-      version: require("@/../package.json").version,
       langList: [
         {key: 'CN', name: '简体中文', alias: '简体'},
         {key: 'HK', name: '繁體中文', alias: '繁體'},
@@ -42,6 +41,7 @@ export default {
   },
   computed: {
     ...mapState('setting', ['theme', 'isMobile', 'layout', 'systemName', 'lang', 'pageWidth']),
+    ...mapGetters('account', ['user']),
     headerTheme () {
       if (this.layout == 'side' && this.theme.mode == 'dark' && !this.isMobile) {
         return 'light'
