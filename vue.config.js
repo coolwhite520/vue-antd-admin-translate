@@ -41,7 +41,6 @@ module.exports = {
                 target: process.env.VUE_APP_API_BASE_URL,
                 changeOrigin: true,
                 proxyTimeout: 10 * 60 * 1000,
-                ws: true,
                 timeout: 10 * 60 * 1000,
                 pathRewrite: {
                     '^/api': ''
