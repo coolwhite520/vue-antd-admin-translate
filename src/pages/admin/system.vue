@@ -1,18 +1,48 @@
 <template>
   <div>
-    <a-card>
+    <a-card >
       <div slot="title">
-        <a-icon type="redo"/>&nbsp;系统服务修复
+        <a-icon type="redo"/>&nbsp;系统组件修复
       </div>
       <div style="text-align: center">
-        <a-button type="primary" style="width: 50%" @click="handleClickRepair" :loading="loading">立即修复</a-button>
+        <a-button type="primary" style="width: 50%" @click="handleClickRepair" :loading="loadingBtn">立即修复</a-button>
       </div>
-
     </a-card>
     <a-card style="margin-top: 20px;">
       <div slot="title">
-        <a-icon type="arrow-up"/>&nbsp;系统服务升级
+        <a-icon type="arrow-up"/>&nbsp;系统组件升级
       </div>
+      <a-table :scroll="{ y: 800 }"
+               :pagination="false"
+               :columns="columnsComponents"
+               :data-source="tableData"
+               rowKey="name" style="margin-top: 20px;"
+               size="small">
+
+        <template slot="versions" slot-scope="text, record">
+          <div v-if="record.versions && record.versions.length > 0">
+            <a-select v-model="record.up_version" @change="(value) => { handleChangeVersion(value, record) }">
+              <a-select-option v-for="item in record.versions" :key="item">
+                {{ item }}
+              </a-select-option>
+            </a-select>
+          </div>
+          <div v-else>无</div>
+        </template>
+        <template slot="operation" slot-scope="text, record">
+          <div style="text-align: center">
+            <a-tooltip >
+              <div slot="title">
+                {{record.up_version > record.current_version ? '升级': '恢复'}}
+              </div>
+              <a-button :disabled="record.up_version === ''" @click="() => handleClickUpgrade(record)" size="small" type="primary" >
+                <a-icon :type="record.up_version > record.current_version ? 'cloud-upload':'redo'" />
+              </a-button>
+            </a-tooltip>
+          </div>
+        </template>
+      </a-table>
+
       <div style="text-align: center">
         <a-upload-dragger
             :multiple="true"
@@ -34,7 +64,10 @@
                 点击或拖拽到此区域
               </p>
               <p class="ant-upload-hint">
-                注意：必须是.tar后缀的升级文件，否则有可能导致系统崩溃并不可用！
+                注意：必须是官方提供的.zip后缀的升级文件，否则可能导致系统崩溃不可用！
+              </p>
+              <p class="ant-upload-hint">
+               上传成功后系统会自动检测新组件的版本信息
               </p>
             </a-col>
           </a-row>
@@ -69,22 +102,81 @@ import {request} from "../../utils/request";
 import {PostRepairSysApi} from "../../services/api"
 import axios from "axios"
 const SparkMD5 = require("spark-md5")
+import {GetComponents, PostUpgrade} from "../../services/admin";
+
+
+const columnsComponents = [
+  {
+    title: '组件名称',
+    dataIndex: 'name',
+    scopedSlots: {customRender: 'name'},
+    align: 'center'
+  },
+  {
+    title: '当前版本',
+    dataIndex: 'current_version',
+    scopedSlots: {customRender: 'current_version'},
+    ellipsis: true,
+    align: 'center'
+  },
+  {
+    title: '可用版本',
+    dataIndex: 'versions',
+    scopedSlots: {customRender: 'versions'},
+    ellipsis: true,
+    align: 'center'
+  },
+  {
+    title: '操作',
+    dataIndex: 'operation',
+    scopedSlots: {customRender: 'operation'},
+    align: 'center'
+  },
+]
 
 export default {
   name: "SystemManage",
   data() {
     return {
+      columnsComponents,
       fileList: [],
-      uploading: false,
       loading: false,
+      uploading: false,
+      loadingBtn: false,
       percent: 0,
+      tableData: [],
     }
   },
   created() {
+    this.fetchComponents();
   },
   methods: {
+    fetchComponents() {
+      GetComponents().then((res) => {
+        if (res.data.code !== 200) {
+          this.$message.warning(res.data.msg)
+          return;
+        }
+        this.tableData = res.data.data.map((item) => {
+          let arr = item.versions.filter((a) => {
+            return a > item.current_version
+          })
+          return {
+            ...item,
+            up_version: arr.length > 0 ? arr[0]: item.current_version
+          }
+        });
+      })
+      .catch((err) => {
+        this.$message.warning(err.message);
+      })
+    },
     handleChange(info) {
       console.log(info)
+    },
+    handleChangeVersion(v, record) {
+      console.log(v, record)
+      record["up_version"] = v
     },
     handleRemove(file) {
       console.log("remove")
@@ -99,8 +191,27 @@ export default {
       return false;
     },
     handleClickRepair() {
-      this.loading = true
+      this.loadingBtn = true
       request(PostRepairSysApi, "post")
+          .then((res) => {
+            if (res.data.code !== 200) {
+              this.$message.warning(res.data.msg)
+              this.loadingBtn = false
+              return;
+            }
+            this.loadingBtn = false
+            this.$message.success(res.data.msg);
+          })
+          .catch((err) => {
+            this.$message.warning(err.message)
+            this.loadingBtn = false
+            return;
+          })
+    },
+
+    handleClickUpgrade(item) {
+      this.loading = true
+      PostUpgrade(item)
           .then((res) => {
             if (res.data.code !== 200) {
               this.$message.warning(res.data.msg)
@@ -109,6 +220,7 @@ export default {
             }
             this.loading = false
             this.$message.success(res.data.msg);
+            this.fetchComponents()
           })
           .catch((err) => {
             this.$message.warning(err.message)
@@ -116,76 +228,15 @@ export default {
             return;
           })
     },
-
-    // async upload(file) {
-    //   try {
-    //     const conn = await neffos.dial("/api/ws/upload", {
-    //       default: { // "default" namespace.
-    //         _OnNamespaceConnected: function (nsConn, msg) {
-    //           if (nsConn.conn.wasReconnected()) {
-    //             console.log("re-connected after " + nsConn.conn.reconnectTries.toString() + " trie(s)");
-    //           }
-    //           console.log("connected to namespace: " + msg.Namespace);
-    //         },
-    //         _OnNamespaceDisconnect: function (nsConn, msg) {
-    //           console.log("disconnected from namespace: " + msg.Namespace);
-    //         },
-    //         NewFile: function (nsConn, msg) { // "chat" event.
-    //           console.log(msg.Body);
-    //         },
-    //         WriteFile: function (nsConn, msg) { // "chat" event.
-    //           console.log(msg.Body);
-    //         },
-    //         CloseFile: function (nsConn, msg) { // "chat" event.
-    //           console.log(msg.Body);
-    //         }
-    //       }
-    //     }, { // optional.
-    //       reconnect: 2000,
-    //     });
-    //     console.log("begin conn")
-    //     const nsConn = await conn.connect("default");
-    //     let reqObj = {
-    //       file_name: "a.epub",
-    //       data: [],
-    //     }
-    //
-    //     nsConn.emit("NewFile", JSON.stringify(reqObj));
-    //     const stream = file.stream()
-    //     stream.on("data", (chunk) => {
-    //       nsConn.emit("WriteFile", chunk.toString("base64"));
-    //     })
-    //     stream.on("finish", () => {
-    //       nsConn.emit("CloseFile", JSON.stringify(reqObj));
-    //     })
-    //   } catch (err) {
-    //     console.error(err.message);
-    //   }
-    // },
-    // 获取文件二进制数据
-    async getFileBinary(file) {
-      return new Promise((resolve, reject) => {
-        let reader = new FileReader();
-        reader.onload = function (e) {
-          console.log(e)
-          resolve(e.target.result)
-        }
-        reader.onerror = function () {
-          reject()
-        }
-        reader.readAsArrayBuffer(file);
-      })
-
-    },
     async upload(formData) {
       return new Promise((resolve, reject) => {
         axios({
           url: '/api/admin/upload',
           method: 'post',
           data: formData,
-          onUploadProgress(progress) {
-            console.log(Math.round(progress.loaded / progress.total * 100) + '%');
-          },
+          // onUploadProgress(progress) {
+          //   console.log(Math.round(progress.loaded / progress.total * 100) + '%');
+          // },
         }).then((res) => {
           resolve(res)
         })
@@ -228,24 +279,18 @@ export default {
         order++;
       }
       this.percent = 0;
+      this.fetchComponents();
     },
 // 读取二进制文件
     async handleUploadUpdateFile() {
       const {fileList} = this;
       for (let file of fileList) {
-        // let chunkSize = 2 * 1024 * 1024 // Read in chunks of 2MB
-        // let chunks = Math.ceil(file.size / chunkSize)
         await this.sliceUploadFile(file)
+        const index = this.fileList.indexOf(file);
+        const newFileList = this.fileList.slice();
+        newFileList.splice(index, 1);
+        this.fileList = newFileList;
       }
-
-
-      // const formData = new FormData();
-      // fileList.forEach(file => {
-      //   formData.append('file', file);
-      //   console.log(file)
-      // });
-
-
     }
   }
 }

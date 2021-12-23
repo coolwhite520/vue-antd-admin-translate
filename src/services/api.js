@@ -19,4 +19,6 @@ module.exports = {
   PostAddUserApi: `${BASE_URL}/admin`,
   PostModifyUserPwdApi: `${BASE_URL}/admin/password`,
   DeleteUserApi: `${BASE_URL}/admin`,
+  GetComponentsApi: `${BASE_URL}/admin/components`,
+  PostUpgradeApi: `${BASE_URL}/admin/upgrade`,
 }
