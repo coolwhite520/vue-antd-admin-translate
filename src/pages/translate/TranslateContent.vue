@@ -23,9 +23,9 @@
             :disabled="true"
         />
         <div style="text-align: right;margin-top: 10px;">
-          <a-button  @click="handleClickEmpty"><a-icon type="delete" />&nbsp;Clear</a-button>
+          <a-button  @click="handleClickEmpty"><a-icon type="delete" />&nbsp;清空</a-button>
           &nbsp;
-          <a-button  @click="handleClickCopy"><a-icon type="copy" />&nbsp;Copy</a-button>
+          <a-button  @click="handleClickCopy"><a-icon type="copy" />&nbsp;拷贝</a-button>
           &nbsp;
           <a-button type="primary" @click="handleClickTransContent" :loading="loading">
             <a-icon type="cloud" />&nbsp;翻译
