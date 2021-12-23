@@ -62,11 +62,11 @@ const respNotActivation = {
         if (response.data.code === HttpStatus.HttpActivationNotFound ||
             response.data.code === HttpStatus.HttpActivationExpiredError
         ) {
-            let {machineId} = response.data;
+            let {sn} = response.data;
             router.push({
                 path: '/activation',
                 query: {
-                    machineId
+                    sn
                 }
             })
         }
@@ -98,11 +98,11 @@ const respLoginExpired = {
         if (response.data.code === HttpStatus.HttpUserExpired ||
             response.data.code === HttpStatus.HttpUserNoThisUserError ||
             response.data.code === HttpStatus.HttpUserNotLogin) {
-            let {machineId} = response.data;
+            let {sn} = response.data;
             router.push({
                 path: '/login',
                 query: {
-                    machineId
+                    sn
                 }
             })
         }
