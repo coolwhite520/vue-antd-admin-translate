@@ -48,16 +48,15 @@ export default {
           return;
         } else {
           clearInterval(loop);
-          this.percent = 100
-          this.$message.success("系统状态检测完毕，可以正常开启翻译之旅。")
           setTimeout(() => {
+            this.percent = 100
+            this.$message.success("系统状态检测完毕，可以正常开启翻译之旅。")
             this.$router.push("/translate")
-          }, 2000)
+          }, 10 * 1000)
         }
       }).catch((err) => {
         this.$message.error(err.message)
       })
-
     }, 1000)
   },
 

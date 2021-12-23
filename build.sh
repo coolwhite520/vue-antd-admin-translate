@@ -1,5 +1,5 @@
 #!/bin/sh
 yarn build
-docker build -t nginx-web:1.0.1 .
-docker save -o nginx-web.tar nginx-web
-docker rmi nginx-web
+docker build -t web:3.2.8 .
+docker save -o web.tar web:3.2.8
+docker rmi web:3.2.8
