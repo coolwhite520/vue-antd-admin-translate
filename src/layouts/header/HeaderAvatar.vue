@@ -14,6 +14,10 @@
         <a-icon type="setting" />
         <span>系统管理</span>
       </a-menu-item>
+      <a-menu-item @click="handleClickJumpHome">
+        <a-icon type="arrow-left" />
+        <span>返回首页</span>
+      </a-menu-item>
       <a-menu-divider />
       <a-menu-item @click="logout">
         <a-icon style="margin-right: 8px;" type="poweroff" />
@@ -43,7 +47,13 @@ export default {
       } else {
         this.$router.push('/admin')
       }
-
+    },
+    handleClickJumpHome() {
+      if (this.$route.path === "/translate") {
+        this.$router.go(0)
+      } else {
+        this.$router.push('/translate')
+      }
     },
     handleClickSelfCenter() {
       if (this.$route.path === "/self") {

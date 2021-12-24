@@ -4,21 +4,21 @@
       <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
         <a-textarea
             ref="inputText"
-            :auto-size="{ minRows: 10, maxRows: 20 }"
+            id="inputTextId"
+            :auto-size="{ minRows: 15, maxRows: 15 }"
             :allowClear="true"
             v-model="content"
             size="large"
             :maxLength="maxLength"
-            :placeholder="placeholder"
             @change="onChangeContent"
         />
-
+        <div style="margin-top: 10px;text-align: right;font-size: 10px;">{{tip}}</div>
       </a-col>
       <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
         <a-textarea
-            :auto-size="{ minRows: 10, maxRows: 20 }"
             :allowClear="true"
             v-model="outContent"
+            :auto-size="{ minRows: 15, maxRows: 15 }"
             size="large"
             :disabled="true"
         />
@@ -55,6 +55,9 @@ export default {
   computed: {
     placeholder() {
       return `最大支持${this.maxLength}个字符`
+    },
+    tip() {
+      return `${this.$amountRule(this.content.length)} / ${this.$amountRule(this.maxLength)}`
     }
   },
   created() {
@@ -120,3 +123,8 @@ export default {
 }
 </script>
 
+<style type="text/css">
+.ant-input:focus {
+  box-shadow: none;
+}
+</style>

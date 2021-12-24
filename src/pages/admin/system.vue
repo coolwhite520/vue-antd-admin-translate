@@ -22,7 +22,7 @@
 
           <template slot="versions" slot-scope="text, record">
             <div v-if="record.versions && record.versions.length > 0">
-              <a-select v-model="record.up_version" @change="(value) => { handleChangeVersion(value, record) }">
+              <a-select v-model="record.up_version" @change="(value) => { handleChangeVersion(value, record) }" style="width: 80px;">
                 <a-select-option v-for="item in record.versions" :key="item">
                   {{ item }}
                 </a-select-option>

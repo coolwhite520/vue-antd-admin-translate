@@ -45,6 +45,20 @@ Vue.prototype.$GenerateQR = async text => {
   }
 }
 
+Vue.prototype.$amountRule =(num)=>{
+  if (num > 1000) {
+    num = num + "";
+    let result = '';
+    let str = ',';
+    while (num.length > 3) {
+      result = str + num.slice(-3) + result;
+      num = num.slice(0, num.length - 3);
+    }
+    if (num) { result = num + result; }
+    return result;
+  }
+  return num
+}
 
 bootstrap({router, store, i18n, message: Vue.prototype.$message})
 
