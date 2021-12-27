@@ -47,8 +47,8 @@ export default {
           clearInterval(loop)
           return;
         } else {
-          clearInterval(loop);
           this.msg = "系统状态检测完毕，等待页面自动跳转..."
+          clearInterval(loop);
           setTimeout(() => {
             this.percent = 100
             this.$message.success("系统状态检测完毕，可以正常开启翻译之旅。")
