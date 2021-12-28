@@ -46,6 +46,7 @@
           show-size-changer
           :page-size="pageSize"
           @showSizeChange="onShowSizeChange"
+          @change="onChangePage"
           size="small"
       >
         <template slot="buildOptionText" slot-scope="props">
@@ -132,6 +133,9 @@ export default {
       }).catch((err) => {
         this.$message.error(err.message)
       })
+    },
+    onChangePage() {
+      this.fetchTableData()
     },
     onShowSizeChange(current, pageSize) {
       this.pageSize = pageSize;
