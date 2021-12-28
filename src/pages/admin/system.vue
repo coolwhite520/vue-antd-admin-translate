@@ -267,6 +267,7 @@ export default {
       let order = 1
       this.percent = 0;
       let total = Math.ceil(file.size / chunkSize)
+      let res;
       while (start < totalSize) {
         // 根据长度截取每次需要上传的数据
         // File对象继承自Blob对象，因此包含slice方法
@@ -282,7 +283,7 @@ export default {
         formData.append('fileName', file.name);
         formData.append('fileMd5', fileMd5);
 
-        let res = await this.upload(formData)
+        res = await this.upload(formData)
         if (res.data.code !== 200) {
           this.$message.warning(res.data.msg);
           this.percent = 0;
@@ -294,6 +295,18 @@ export default {
         order++;
       }
       this.percent = 0;
+      if (res.data.code !== 200) {
+        this.$message.warning(res.data.msg);
+        this.percent = 0;
+        return;
+      }
+      let {image_name, image_version} = res.data.data
+      this.$notification.success(
+          {
+            message: '上传组件成功',
+            description: `成功的上传了组件:${image_name}，版本:${image_version}，可进行升级、恢复操作！`,
+          }
+      )
       this.fetchComponents();
     },
 // 读取二进制文件

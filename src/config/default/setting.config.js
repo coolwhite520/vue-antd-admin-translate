@@ -18,7 +18,7 @@ module.exports = {
   cachePage: true,                      //是否缓存页面数据，仅多页签模式下生效，true 缓存, false 不缓存
   hideSetting: true,                   //隐藏设置抽屉，true:隐藏，false:不隐藏
   systemName: 'Matrix - 翻译平台',         //系统名称
-  copyright: '北京繁复科技有限公司',        //copyright
+  copyright: '北京繁浮科技有限公司',        //copyright
   asyncRoutes: false,                   //异步加载路由，true:开启，false:不开启
   showPageTitle: true,                  //是否显示页面标题（PageLayout 布局中的页面标题），true:显示，false:不显示
   filterMenu: true,                    //根据权限过滤菜单，true:过滤，false:不过滤
