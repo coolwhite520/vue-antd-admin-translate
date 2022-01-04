@@ -4,7 +4,8 @@ import {
     PostModifyUserPwdApi,
     GetComponentsApi,
     DeleteUserApi,
-    PostUpgradeApi
+    PostUpgradeApi,
+    PostModifyUserMarkApi
 } from '@/services/api'
 
 import {request, METHOD,} from '@/utils/request'
@@ -27,6 +28,12 @@ export async function PostUpgrade(obj) {
 export async function PostModifyUserPwd(obj) {
     return request(PostModifyUserPwdApi, METHOD.POST, obj)
 }
+
+export async function PostModifyUserMark(obj) {
+    return request(PostModifyUserMarkApi, METHOD.POST, obj)
+}
+
+
 export async function DeleteUserById(id) {
     return request(`${DeleteUserApi}/${id}`, METHOD.DELETE)
 }

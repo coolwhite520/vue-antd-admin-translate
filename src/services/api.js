@@ -18,6 +18,7 @@ module.exports = {
   PostRepairSysApi: `${BASE_URL}/admin/repair`,
   PostAddUserApi: `${BASE_URL}/admin`,
   PostModifyUserPwdApi: `${BASE_URL}/admin/password`,
+  PostModifyUserMarkApi:  `${BASE_URL}/admin/mark`,
   DeleteUserApi: `${BASE_URL}/admin`,
   GetComponentsApi: `${BASE_URL}/admin/components`,
   PostUpgradeApi: `${BASE_URL}/admin/upgrade`,

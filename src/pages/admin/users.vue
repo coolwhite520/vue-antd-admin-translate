@@ -28,11 +28,23 @@
               <a-icon slot="prefix" type="lock" style="color:rgba(0,0,0,.25)"/>
             </a-input>
           </a-form-item>
+
+          <a-form-item>
+            <a-textarea
+                v-decorator="['mark']"
+                placeholder="备注"
+                :auto-size="{ minRows: 1, maxRows: 5 }"
+                :allowClear="true"
+            >
+            </a-textarea>
+          </a-form-item>
+
           <a-form-item>
             <a-button type="primary" html-type="submit" :disabled="hasErrors(form.getFieldsError())">
               新增用户
             </a-button>
           </a-form-item>
+
         </a-form>
       </a-card>
 
@@ -50,6 +62,20 @@
               &nbsp;
               <a-tooltip title="保存新密码">
                 <a @click="() => handleClickSaveNewPwd(record)">
+                  <a-icon type="save"/>
+                </a>
+              </a-tooltip>
+            </div>
+            <div v-else>
+              {{ text }}
+            </div>
+          </template>
+          <template slot="mark" slot-scope="text, record">
+            <div v-if="record.isEditable">
+              <a-textarea  style="width: 80%" v-model="record.mark" :auto-size="{ minRows: 1, maxRows: 5 }" :allowClear="true"/>
+              &nbsp;
+              <a-tooltip title="保存新备注">
+                <a @click="() => handleClickSaveNewMark(record)">
                   <a-icon type="save"/>
                 </a>
               </a-tooltip>
@@ -79,7 +105,7 @@
 </template>
 
 <script>
-import {GetAllUsers, PostAddUser, PostModifyUserPwd, DeleteUserById} from "../../services/admin";
+import {GetAllUsers, PostAddUser, PostModifyUserPwd, DeleteUserById, PostModifyUserMark} from "../../services/admin";
 
 const columnsUser = [
   {
@@ -101,6 +127,12 @@ const columnsUser = [
     align: 'center'
   },
   {
+    title: '备注',
+    dataIndex: 'mark',
+    scopedSlots: {customRender: 'mark'},
+    align: 'center'
+  },
+  {
     title: '操作',
     dataIndex: 'operation',
     scopedSlots: {customRender: 'operation'},
@@ -119,6 +151,7 @@ export default {
       columnsUser,
       tableData: [],
       hasErrors,
+      tempMark: "",
       form: this.$form.createForm(this, {name: 'horizontal_login'}),
     }
   },
@@ -160,9 +193,29 @@ export default {
           this.$refs['input' + record.username].focus();
         }, 200)
         record.password = ""
+        this.tempMark = record.mark;
       } else {
         record.password = "******"
+        record.mark = this.tempMark
       }
+    },
+    handleClickSaveNewMark(record) {
+      let {id, mark} = record;
+      mark = mark.trim();
+      PostModifyUserMark({id, mark})
+          .then((res) => {
+            console.log(res)
+            if (res.data.code !== 200) {
+              this.$message.warning(res.data.msg)
+              return
+            }
+            this.$message.success(`修改新备注成功`)
+            this.$router.go(0);
+          })
+          .catch((err) => {
+            this.$message.warning(err.message)
+            return;
+          })
     },
     handleClickSaveNewPwd(record) {
       let {id, password} = record;
@@ -182,6 +235,7 @@ export default {
             this.$message.success(`修改密码成功, 新密码:${password}`)
             record.isEditable = false
             record.password = "******"
+            this.$router.go(0);
           })
           .catch((err) => {
             this.$message.warning(err.message)
@@ -219,8 +273,8 @@ export default {
       e.preventDefault();
       this.form.validateFields((err, values) => {
         if (!err) {
-          let {userName: username, password} = values
-          PostAddUser({username, password})
+          let {userName: username, password, mark} = values
+          PostAddUser({username, password, mark})
               .then((res) => {
                 console.log(res)
                 if (res.data.code !== 200) {
@@ -228,8 +282,7 @@ export default {
                   return
                 }
                 this.$message.success("新增用户成功")
-                // this.form.resetFields()
-                this.fetchUsersList();
+                this.$router.go(0);
               })
               .catch((err) => {
                 this.$message.warning(err.message)

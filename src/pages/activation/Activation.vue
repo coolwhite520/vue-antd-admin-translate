@@ -61,6 +61,7 @@ export default {
       }
       PostActivation(obj)
       .then(res => {
+        console.log(res)
         if (res.data.code !== 200) {
           this.$message.warning(res.data.msg);
           this.keystore = ""
