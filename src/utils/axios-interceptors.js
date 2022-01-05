@@ -60,8 +60,10 @@ const respNotActivation = {
     onFulfilled(response, options) {
         const {router} = options
         if (response.data.code === HttpStatus.HttpActivationNotFound ||
-            response.data.code === HttpStatus.HttpActivationExpiredError
-        ) {
+            response.data.code === HttpStatus.HttpActivationReadFileError ||
+            response.data.code === HttpStatus.HttpActivationInvalidateError ||
+            response.data.code === HttpStatus.HttpActivationExpiredError)
+        {
             let {sn} = response.data;
             router.push({
                 path: '/activation',

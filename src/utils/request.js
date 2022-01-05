@@ -20,7 +20,9 @@ const AUTH_TYPE = {
 // http method
 const METHOD = {
   GET: 'get',
-  POST: 'post'
+  POST: 'post',
+  DELETE: 'delete',
+  PUT: 'put',
 }
 
 /**
