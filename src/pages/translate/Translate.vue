@@ -28,6 +28,24 @@
                   <a-tab-pane :key="item.en_name" :tab="item.cn_name">
                   </a-tab-pane>
                 </template>
+                <template slot="tabBarExtraContent">
+                  <a-dropdown :trigger="['click']">
+                    <a class="ant-dropdown-link" @click="e => e.preventDefault()">
+                      Hover me <a-icon type="down" />
+                    </a>
+                    <a-menu slot="overlay">
+                      <a-menu-item>
+                        <a href="javascript:;">1st menu item</a>
+                      </a-menu-item>
+                      <a-menu-item>
+                        <a href="javascript:;">2nd menu item</a>
+                      </a-menu-item>
+                      <a-menu-item>
+                        <a href="javascript:;">3rd menu item</a>
+                      </a-menu-item>
+                    </a-menu>
+                  </a-dropdown>
+                </template>
               </a-tabs>
             </a-col>
             <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
