@@ -22,51 +22,49 @@
         <a-card style="border-radius: 10px;margin-top: 20px;box-shadow:1px 0px 10px 1px #8792a8;">
           <!--         语言列表-->
           <a-row :gutter=[12,12] v-show="radioType==='text'">
-            <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+            <a-col :xs="24" :sm="24" :md="11" :lg="11" :xl="11">
               <a-tabs :activeKey="srcLang" @change="onChangeSrcLanguage">
-                <template v-for="item of languageList">
+                <template v-for="item of languageList.slice(0,2)">
                   <a-tab-pane :key="item.en_name" :tab="item.cn_name">
                   </a-tab-pane>
                 </template>
                 <template slot="tabBarExtraContent">
-                  <a-dropdown :trigger="['click']">
-                    <a class="ant-dropdown-link" @click="e => e.preventDefault()">
-                      Hover me <a-icon type="down" />
-                    </a>
-                    <a-menu slot="overlay">
-                      <a-menu-item>
-                        <a href="javascript:;">1st menu item</a>
-                      </a-menu-item>
-                      <a-menu-item>
-                        <a href="javascript:;">2nd menu item</a>
-                      </a-menu-item>
-                      <a-menu-item>
-                        <a href="javascript:;">3rd menu item</a>
-                      </a-menu-item>
-                    </a-menu>
-                  </a-dropdown>
+                  <a-button shape="circle" :icon="!showSupportLangView?'down':'up'" @click="handleClickSelectSrc"/>
                 </template>
               </a-tabs>
             </a-col>
-            <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+            <a-col :xs="24" :sm="24" :md="2" :lg="2" :xl="2">
+              <div style="text-align: center;margin-top: 5px;">
+                <a-button shape="circle" icon="swap" />
+              </div>
+            </a-col>
+            <a-col :xs="24" :sm="24" :md="11" :lg="11" :xl="11">
               <a-tabs :activeKey="desLang" @change="onChangeDesLanguage">
-                <template v-for="item of languageList" >
+                <template v-for="item of languageList.slice(0,2)" >
                   <a-tab-pane :key="item.en_name" :tab="item.cn_name">
                   </a-tab-pane>
+                </template>
+                <template slot="tabBarExtraContent">
+                  <a-button shape="circle" :icon="!showSupportLangView?'down':'up'" @click="showSupportLangView=!showSupportLangView"/>
                 </template>
               </a-tabs>
             </a-col>
           </a-row>
 <!--          根据radioType进行判断-->
-          <div v-if="radioType==='text'">
-            <translate-content :srcLang="srcLang" :desLang="desLang"/>
-          </div>
-          <div v-else-if="radioType==='file'">
-            <translate-file :langList="languageList"/>
-          </div>
-          <div v-else-if="radioType==='history'">
-            <history :langList="languageList"/>
-          </div>
+          <template v-if="showSupportLangView">
+
+          </template>
+          <template v-else>
+            <div v-if="radioType==='text'">
+              <translate-content :srcLang="srcLang" :desLang="desLang"/>
+            </div>
+            <div v-else-if="radioType==='file'">
+              <translate-file :langList="languageList"/>
+            </div>
+            <div v-else-if="radioType==='history'">
+              <history :langList="languageList"/>
+            </div>
+          </template>
         </a-card>
       </a-col>
       <a-col :xs="0" :sm="0" :md="3" :lg="3" :xl="3">
@@ -96,6 +94,7 @@ export default {
       srcLang: "",
       desLang: "",
       isServerException: false,
+      showSupportLangView: false,
     }
   },
   computed: {
@@ -119,6 +118,9 @@ export default {
     });
   },
   methods: {
+    handleClickSelectSrc() {
+      this.showSupportLangView = !this.showSupportLangView
+    },
     handleChangeRadio(e) {
       this.radioType = e.target.value;
       console.log(this.radioType);
