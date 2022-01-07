@@ -62,6 +62,8 @@ Vue.prototype.$amountRule =(num)=>{
 
 bootstrap({router, store, i18n, message: Vue.prototype.$message})
 
+Vue.prototype.$bus = new Vue();
+
 new Vue({
   router,
   store,

@@ -65,6 +65,9 @@ export default {
   },
   mounted() {
     this.$refs.inputText.focus();
+    this.$bus.$on("swapLang", () => {
+      this.content = this.outContent
+    })
   },
   methods: {
     onChangeContent() {

@@ -34,6 +34,7 @@
                 </template>
               </a-tabs>
             </a-col>
+<!--            语言转换按钮-->
             <a-col :xs="24" :sm="24" :md="2" :lg="2" :xl="2">
               <div style="text-align: center;margin-top: 5px;">
                 <a-button shape="circle" icon="swap" @click="handleClickSwap"/>
@@ -52,33 +53,34 @@
               </a-tabs>
             </a-col>
           </a-row>
-
-          <template v-if="showSrcLangTable || showDesLangTable">
-            <!--            所有的语言列表， 当支持的语言比较多的时候，大于3个的时候-->
-            <a-input placeholder="搜索语言" size="large" v-model="searchInputValue" @change="onChangeInput" :allowClear="true"/>
-            <div style="overflow: auto; height: 400px; margin-left: 5px;margin-top: 5px;">
-              <div v-for="item of groupByCharLangList" :key="item.key" style="margin-bottom: 10px;">
-                <div style="color: #9c9c9c">
-                  {{ item.key.toUpperCase() }}
-                </div>
-                <div style="margin-top: 2px;">
-                  <a-button v-for="obj of item.list"
-                            :key="obj.en_name"
-                            @click="handleClickTag(obj)"
-                            style="margin-right: 5px;margin-top: 3px;"
-                            :type="obj.isSupport?'default':'dashed'"
-                            :disabled="!obj.isSupport"
-                  >
-                    {{ obj.cn_name }}
-                  </a-button>
-                </div>
-              </div>
-            </div>
-          </template>
-          <template v-else>
+          <template>
             <!--          根据radioType进行判断-->
             <div v-if="radioType==='text'">
-              <translate-content :srcLang="srcLang" :desLang="desLang"/>
+              <template v-if="showSrcLangTable || showDesLangTable">
+                <!--            所有的语言列表， 当支持的语言比较多的时候，大于3个的时候-->
+                <a-input placeholder="搜索语言" size="large" v-model="searchInputValue" @change="onChangeInput" :allowClear="true"/>
+                <div style="overflow: auto; height: 400px; margin-left: 5px;margin-top: 5px;">
+                  <div v-for="item of groupByCharLangList" :key="item.key" style="margin-bottom: 10px;">
+                    <div style="color: #9c9c9c">
+                      {{ item.key.toUpperCase() }}
+                    </div>
+                    <div style="margin-top: 2px;">
+                      <a-button v-for="obj of item.list"
+                                :key="obj.en_name"
+                                @click="handleClickTag(obj)"
+                                style="margin-right: 5px;margin-top: 3px;"
+                                :type="obj.isSupport?'default':'dashed'"
+                                :disabled="!obj.isSupport"
+                      >
+                        {{ obj.cn_name }}
+                      </a-button>
+                    </div>
+                  </div>
+                </div>
+              </template>
+              <template v-else>
+                <translate-content :srcLang="srcLang" :desLang="desLang"/>
+              </template>
             </div>
             <div v-else-if="radioType==='file'">
               <translate-file :langList="languageList"/>
@@ -126,6 +128,7 @@ export default {
   data() {
     return {
       searchInputValue: "",
+      loading: false,
       radioType: "text",
       languageList: [],     // 所有支持的语言
       allLanguageList: [],     // 所有语言
@@ -156,6 +159,9 @@ export default {
     this.srcLang = this.srcLanguageList[0].en_name
     this.desLang = this.desLanguageList[1].en_name
   },
+  mounted() {
+
+  },
   methods: {
     handleClickSwap() {
       let srcTemp = this.srcLang
@@ -176,6 +182,7 @@ export default {
         this.desLanguageList.unshift(obj)
         this.desLang = this.desLanguageList[0].en_name
       }
+      this.$bus.$emit("swapLang")
     },
     handleClickSrcLangTbl() {
       this.searchInputValue = ""
@@ -320,9 +327,11 @@ export default {
 
     handleChangeRadio(e) {
       this.radioType = e.target.value;
-      console.log(this.radioType);
+      this.showSrcLangTable = false
+      this.showDesLangTable = false
     },
     onChangeSrcLanguage(activeKey) {
+      this.showSrcLangTable = false
       this.srcLang = activeKey
       if (this.srcLang === this.desLang) {
         for (let item of this.desLanguageList) {
@@ -334,6 +343,7 @@ export default {
       }
     },
     onChangeDesLanguage(activeKey) {
+      this.showDesLangTable = false
       this.desLang = activeKey
       if (this.srcLang === this.desLang) {
         for (let item of this.srcLanguageList) {
