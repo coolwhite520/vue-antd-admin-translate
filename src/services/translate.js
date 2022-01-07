@@ -5,6 +5,7 @@ import {
     PostTransFileApi,
     PostTransDownFileApi,
     GetAllRecordsApi,
+    GetAllLangListApi,
     PostDeleteRecordApi
 } from '@/services/api'
 
@@ -13,8 +14,8 @@ import {request, METHOD,} from '@/utils/request'
 export async function GetTransLangList() {
     return request(GetTransLangListApi, METHOD.GET)
 }
-export async function GetAllRecords() {
-    return request(GetAllRecordsApi, METHOD.GET)
+export async function GetAllLangList() {
+    return request(GetAllLangListApi, METHOD.GET)
 }
 
 export async function GetRecordsByType(type, offset, count) {

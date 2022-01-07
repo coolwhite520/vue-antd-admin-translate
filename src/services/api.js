@@ -7,6 +7,7 @@ module.exports = {
   PostModifyPasswordAPi: `${BASE_URL}/user/password`,
   PostActivationApi:  `${BASE_URL}/activation`,
   GetTransLangListApi: `${BASE_URL}/translate/lang`,
+  GetAllLangListApi: `${BASE_URL}/translate/allLang`,
   PostTransContentApi: `${BASE_URL}/translate/content`,
   PostTransUploadFileApi: `${BASE_URL}/translate/upload`,
   PostTransFileApi: `${BASE_URL}/translate/file`,

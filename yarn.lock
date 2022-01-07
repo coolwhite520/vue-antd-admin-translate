@@ -7726,6 +7726,11 @@ pinkie@^2.0.0:
   resolved "https://registry.npm.taobao.org/pinkie/download/pinkie-2.0.4.tgz#72556b80cfa0d48a974e80e77248e80ed4f7f870"
   integrity sha1-clVrgM+g1IqXToDnckjoDtT3+HA=
 
+pinyin-pro@^3.6.0:
+  version "3.6.0"
+  resolved "https://registry.npmmirror.com/pinyin-pro/download/pinyin-pro-3.6.0.tgz#baa6ba6cbefd6b3201941c1b85bbc6c10d50dc3c"
+  integrity sha512-A/OnH0lJwLiEXevStDuT9dljbRim3dwNF6bY1sJINtot60rK7VWiHTTu/Ia736uJNgFPnxCrlAdIeYekHHMAFQ==
+
 pkg-dir@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npm.taobao.org/pkg-dir/download/pkg-dir-1.0.0.tgz#7a4b508a8d5bb2d629d447056ff4e9c9314cf3d4"

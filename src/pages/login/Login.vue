@@ -5,7 +5,7 @@
         <img alt="logo" class="logo" src="@/assets/img/logo.png" />
         <span class="title">{{systemName}}</span>
       </div>
-      <div class="desc">集神经网络、自然语言分析、图片识别于一身的智能翻译平台</div>
+      <div class="desc">集神经网络、自然语言识别、图片识别于一身的智能翻译平台</div>
     </div>
     <div class="login">
       <a-form @submit="onSubmit" :form="form">
@@ -76,6 +76,7 @@ import CommonLayout from "@/layouts/CommonLayout"
 import {login} from '@/services/user'
 import {setAuthorization} from '@/utils/request'
 import {mapMutations} from 'vuex'
+
 
 export default {
   name: 'Login',
