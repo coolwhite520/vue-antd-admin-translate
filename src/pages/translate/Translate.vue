@@ -183,6 +183,8 @@ export default {
         this.desLang = this.desLanguageList[0].en_name
       }
       this.$bus.$emit("swapLang")
+      this.showSrcLangTable = false
+      this.showDesLangTable = false
     },
     handleClickSrcLangTbl() {
       this.searchInputValue = ""
