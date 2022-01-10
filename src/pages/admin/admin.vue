@@ -9,7 +9,13 @@
           <a-tab-pane key="0" tab="用户管理">
             <user-manage/>
           </a-tab-pane>
-          <a-tab-pane key="1" tab="维护">
+          <a-tab-pane key="1" tab="IP管理">
+            <access-manager/>
+          </a-tab-pane>
+          <a-tab-pane key="2" tab="访问记录">
+            <user-history/>
+          </a-tab-pane>
+          <a-tab-pane key="3" tab="系统维护">
             <system-manage/>
           </a-tab-pane>
         </a-tabs>
@@ -25,9 +31,11 @@
 
 import UserManage from "./users";
 import SystemManage from "./system";
+import AccessManager from "./access";
+import UserHistory from "./userHistory";
 export default {
   name: "admin",
-  components: {SystemManage, UserManage},
+  components: {UserHistory, AccessManager, SystemManage, UserManage},
 }
 </script>
 

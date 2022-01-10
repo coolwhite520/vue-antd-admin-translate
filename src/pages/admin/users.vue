@@ -1,6 +1,9 @@
 <template>
   <div>
       <a-card title="新增用户">
+        <div style="margin-bottom: 10px;color: darkred">
+          密码必须包含大、小写字母、数字，并至少包含一个特殊字符且长度不能小于12位。
+        </div>
         <!-- 禁止浏览器自动填充密码的隐藏输入框 -->
         <a-input type="text" name="hideInput1" style="opacity:0;position:fixed;left:10000px;"></a-input>
         <a-input type="password" name="hideInput2" style="opacity:0;position:fixed;left:10000px;"></a-input>
@@ -13,30 +16,35 @@
           { rules: [{ required: true, message: '请输入新增用户名' }, { min: 5, message: '用户名必须大于4位!' }] },
         ]"
                 placeholder="用户名(必须大于4位)"
+                :allowClear="true"
             >
               <a-icon slot="prefix" type="user" style="color:rgba(0,0,0,.25)"/>
             </a-input>
           </a-form-item>
           <a-form-item :validate-status="passwordError() ? 'error' : ''" :help="passwordError() || ''">
-            <a-input
+            <a-input-search
+                @search="handleClickGeneratePwd"
                 v-decorator="[
           'password',
-          { rules: [{ required: true, message: '请输入新增用户密码' }, { min: 5, message: '密码必须大于4位!' }] },
+          { rules: [{ required: true, message: '请输入新增用户密码' }] },
         ]"
-                placeholder="密码(必须大于4位)"
+                placeholder="密码"
+                :allowClear="true"
             >
               <a-icon slot="prefix" type="lock" style="color:rgba(0,0,0,.25)"/>
-            </a-input>
+              <a-button slot="enterButton" type="primary">
+                <a-icon type="reddit" />随机密码
+              </a-button>
+            </a-input-search>
           </a-form-item>
 
           <a-form-item>
-            <a-textarea
+            <a-input
                 v-decorator="['mark']"
                 placeholder="备注"
-                :auto-size="{ minRows: 1, maxRows: 5 }"
                 :allowClear="true"
             >
-            </a-textarea>
+            </a-input>
           </a-form-item>
 
           <a-form-item>
@@ -58,7 +66,12 @@
                  size="small">
           <template slot="password" slot-scope="text, record">
             <div v-if="record.isEditable">
-              <a-input :ref="'input' + record.username" style="width: 80%" v-model="record.password"/>
+              <a-input-search :ref="'input' + record.username" style="width: 80%" v-model="record.password"
+                              @search="handleClickGenerateRowPwd(record)" >
+                <a-button slot="enterButton" type="primary">
+                  <a-icon type="reddit" />
+                </a-button>
+              </a-input-search>
               &nbsp;
               <a-tooltip title="保存新密码">
                 <a @click="() => handleClickSaveNewPwd(record)">
@@ -165,6 +178,14 @@ export default {
     this.fetchUsersList();
   },
   methods: {
+    handleClickGeneratePwd() {
+      let password = this.$GeneratePwd();
+      this.form.setFieldsValue({password})
+    },
+    handleClickGenerateRowPwd(record) {
+      let password = this.$GeneratePwd();
+      record.password = password;
+    },
     fetchUsersList() {
       GetAllUsers().then((res) => {
         if (res.data.code !== 200) {
@@ -218,11 +239,13 @@ export default {
           })
     },
     handleClickSaveNewPwd(record) {
-      let {id, password} = record;
-      console.log(record)
+      let {id, username, password} = record;
       password = password.trim();
-      if (password.length < 5) {
-        this.$message.warning("密码必须大于4位")
+      let list = this.$PasswordValidator(password)
+      if (list.length > 0) {
+        let tips = list.map(item => item.message)
+        let tipMsg = tips.join("，")
+        this.$message.warning(tipMsg + "。")
         return
       }
       PostModifyUserPwd({id, new_password: password})
@@ -232,10 +255,17 @@ export default {
               this.$message.warning(res.data.msg)
               return
             }
-            this.$message.success(`修改密码成功, 新密码:${password}`)
+            let info = `账号：${username}\r\n密码：${password}`
+            this.$copy(info)
+            this.$notification.success(
+                {
+                  message:  `修改用户：${username} 密码成功`,
+                  description: `新信息已复制到剪贴板`,
+                }
+            )
+            this.fetchUsersList()
             record.isEditable = false
             record.password = "******"
-            this.$router.go(0);
           })
           .catch((err) => {
             this.$message.warning(err.message)
@@ -274,6 +304,13 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           let {userName: username, password, mark} = values
+          let list = this.$PasswordValidator(password)
+          if (list.length > 0) {
+            let tips = list.map(item => item.message)
+            let tipMsg = tips.join("，")
+            this.$message.warning("密码：" + tipMsg + "。")
+            return
+          }
           PostAddUser({username, password, mark})
               .then((res) => {
                 console.log(res)
@@ -281,8 +318,15 @@ export default {
                   this.$message.warning(res.data.msg)
                   return
                 }
-                this.$message.success("新增用户成功")
-                this.$router.go(0);
+                let info = `账号：${username}\r\n密码：${password}`
+                this.$copy(info)
+                this.$notification.success(
+                    {
+                      message:  `新增用户：${username} 成功`,
+                      description: `用户信息已复制到剪贴板`,
+                    }
+                )
+                this.fetchUsersList()
               })
               .catch((err) => {
                 this.$message.warning(err.message)

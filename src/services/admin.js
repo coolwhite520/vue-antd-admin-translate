@@ -1,5 +1,6 @@
 import {
     GetAllUsersApi,
+    GetUserOperatorRecordsApi,
     PostAddUserApi,
     PostModifyUserPwdApi,
     GetComponentsApi,
@@ -38,5 +39,16 @@ export async function DeleteUserById(id) {
     return request(`${DeleteUserApi}/${id}`, METHOD.DELETE)
 }
 
+export async function GetUserOperatorRecords(offset, count) {
+    return request(`${GetUserOperatorRecordsApi}/${offset}/${count}`, METHOD.GET)
+}
+
+export async function DeleteOperatorRecordById(id) {
+    return request(`${GetUserOperatorRecordsApi}/${id}`, METHOD.DELETE)
+}
+
+export async function DeleteAllOperatorRecord() {
+    return request(GetUserOperatorRecordsApi, METHOD.DELETE)
+}
 
 

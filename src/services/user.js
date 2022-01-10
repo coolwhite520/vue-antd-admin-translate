@@ -1,4 +1,4 @@
-import {LOGIN, ROUTES, PostModifyPasswordAPi} from '@/services/api'
+import {LOGIN, LOGOFF, ROUTES, PostModifyPasswordAPi} from '@/services/api'
 import {request, METHOD, removeAuthorization} from '@/utils/request'
 
 /**
@@ -26,11 +26,18 @@ export async function getRoutesConfig() {
 /**
  * 退出登录
  */
-export function logout() {
-  localStorage.removeItem(process.env.VUE_APP_ROUTES_KEY)
-  localStorage.removeItem(process.env.VUE_APP_PERMISSIONS_KEY)
-  localStorage.removeItem(process.env.VUE_APP_ROLES_KEY)
-  removeAuthorization()
+export function logout(UserId) {
+  request(LOGOFF, METHOD.POST, {user_id: UserId})
+      .then(() => {
+        localStorage.removeItem(process.env.VUE_APP_ROUTES_KEY)
+        localStorage.removeItem(process.env.VUE_APP_PERMISSIONS_KEY)
+        localStorage.removeItem(process.env.VUE_APP_ROLES_KEY)
+        removeAuthorization()
+      })
+      .catch(() => {
+
+      })
+
 }
 export default {
   login,

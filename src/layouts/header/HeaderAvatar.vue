@@ -10,11 +10,11 @@
         <a-icon type="user" />
         <span>个人中心</span>
       </a-menu-item>
-      <a-menu-item v-if="user.isSuper" @click="handleClickAdmin">
+      <a-menu-item v-if="user.isSuper" @click="handleClickAdmin" :disabled="user.pwdValidator.length > 0">
         <a-icon type="setting" />
         <span>系统管理</span>
       </a-menu-item>
-      <a-menu-item @click="handleClickJumpHome">
+      <a-menu-item @click="handleClickJumpHome" :disabled="user.pwdValidator.length > 0">
         <a-icon type="arrow-left" />
         <span>返回首页</span>
       </a-menu-item>
@@ -38,7 +38,7 @@ export default {
   },
   methods: {
     logout() {
-      logout()
+      logout(this.user.user_id)
       this.$router.push('/login')
     },
     handleClickAdmin() {

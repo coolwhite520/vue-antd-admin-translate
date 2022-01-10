@@ -62,6 +62,10 @@ export default {
   methods: {
     handleClickLogo() {
       console.log(this.$route)
+      if (this.user.pwdValidator.length > 0) {
+        this.$message.warning("当前密码为弱口令，请先进行密码修改！")
+        return
+      }
       if (this.$route.path === '/translate') {
         this.$router.go(0);
       } else {

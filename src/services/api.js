@@ -4,6 +4,7 @@ const BASE_URL = API_PROXY_PREFIX
 
 module.exports = {
   LOGIN: `${BASE_URL}/user/login`,
+  LOGOFF: `${BASE_URL}/user/logoff`,
   PostModifyPasswordAPi: `${BASE_URL}/user/password`,
   PostActivationApi:  `${BASE_URL}/activation`,
   GetTransLangListApi: `${BASE_URL}/translate/lang`,
@@ -16,6 +17,7 @@ module.exports = {
   PostDeleteRecordApi: `${BASE_URL}/translate/delete`,
 
   GetAllUsersApi: `${BASE_URL}/admin`,
+  GetUserOperatorRecordsApi: `${BASE_URL}/admin/ops`,
   PostRepairSysApi: `${BASE_URL}/admin/repair`,
   PostAddUserApi: `${BASE_URL}/admin`,
   PostModifyUserPwdApi: `${BASE_URL}/admin/password`,

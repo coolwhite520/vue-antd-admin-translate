@@ -113,7 +113,7 @@ export default {
                   this.loading = false;
                   return;
                 }
-                this.afterLogin(res);
+                this.afterLogin(res, password);
               })
               .catch((err) => {
                 this.$message.error(err.message)
@@ -122,16 +122,22 @@ export default {
         }
       })
     },
-    afterLogin(res) {
+    afterLogin(res, password) {
       this.logging = false
       if (res.data.code === 200) {
-        const {user} = res.data
+        let list = this.$PasswordValidator(password)
+        const {user} = res.data;
+        user.pwdValidator = list
         this.setUser(user)
         let tokenObj = {
           token: res.headers['authorization'],
         }
         setAuthorization(tokenObj)
-        this.$router.push('/translate')
+        if (list.length > 0) {
+          this.$router.push('/self')
+        } else {
+          this.$router.push('/translate')
+        }
       } else {
         this.$message.error(res.data.msg)
       }

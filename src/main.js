@@ -13,6 +13,7 @@ import {initI18n} from '@/utils/i18n'
 import bootstrap from '@/bootstrap'
 import 'moment/locale/zh-cn'
 var passwordValidator = require('password-validator');
+var generator = require('generate-password');
 const router = initRouter(store.state.setting.asyncRoutes)
 const i18n = initI18n('CN', 'US')
 
@@ -65,7 +66,7 @@ Vue.prototype.$PasswordValidator = (password) => {
   let schema = new passwordValidator();
   schema
       .is().min(12, "最小输入12个字符")                                    // Minimum length 8
-      .is().max(100, "最大100个字符")                                  // Maximum length 100
+      .is().max(100, "最大输入100个字符")                                  // Maximum length 100
       .has().uppercase(1, "至少包含一个大写字母")                              // Must have uppercase letters
       .has().lowercase(1, "至少包含一个小写字母")                              // Must have lowercase letters
       .has().digits(1, "至少包含一个数字")                                // Must have at least 2 digits
@@ -73,6 +74,20 @@ Vue.prototype.$PasswordValidator = (password) => {
       .has().not().spaces(1, "不能包含空格")
       // .is().not().oneOf(['Passw0rd', 'Password123']); // Blacklist these values
   return schema.validate(password, { details: true });
+}
+
+Vue.prototype.$GeneratePwd = () => {
+  let password = generator.generate({
+    length: 12,
+    numbers: true,
+    symbols: true,
+    lowercase: true,
+    uppercase: true,
+    exclude:`"",''.;:/[](){}`,
+    excludeSimilarCharacters: true,
+    strict: true,
+  });
+  return password
 }
 
 bootstrap({router, store, i18n, message: Vue.prototype.$message})
