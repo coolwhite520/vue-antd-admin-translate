@@ -109,6 +109,7 @@ import axios from "axios"
 
 const SparkMD5 = require("spark-md5")
 import {GetComponents, PostUpgrade} from "../../services/admin";
+import {mapState} from "vuex";
 
 
 const columnsComponents = [
@@ -139,6 +140,7 @@ const columnsComponents = [
     align: 'center'
   },
 ]
+import {logout} from '@/services/user'
 
 export default {
   name: "SystemManage",
@@ -155,6 +157,9 @@ export default {
   },
   created() {
     this.fetchComponents();
+  },
+  computed: {
+    ...mapState('account', {currUser: 'user'}),
   },
   methods: {
     cancel() {
@@ -226,6 +231,11 @@ export default {
       } else {
         this.pageLoadingTip = `正在进行${item.name}组件的恢复，请稍后...`
       }
+      setTimeout(() => {
+        if (item.name === 'web') {
+          logout(this.currUser.user_id)
+        }
+      }, 2000)
       PostUpgrade(item)
           .then((res) => {
             if (res.data.code !== 200) {
