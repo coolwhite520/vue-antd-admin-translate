@@ -25,4 +25,8 @@ module.exports = {
   DeleteUserApi: `${BASE_URL}/admin`,
   GetComponentsApi: `${BASE_URL}/admin/components`,
   PostUpgradeApi: `${BASE_URL}/admin/upgrade`,
+
+
+  IpTableUrl: `${BASE_URL}/admin/ip_table`,
+  IpTableTypeUrl: `${BASE_URL}/admin/ip_table_type`
 }

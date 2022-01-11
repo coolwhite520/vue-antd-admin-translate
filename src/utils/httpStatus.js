@@ -24,13 +24,14 @@ const HttpStatus = {
     HttpTranslateError: -1021,
     HttpRecordGetError: -1022,
     HttpRecordDelError: -1023,
-    HttpUsersQueryError: -1024,
-    HttpUsersDeleteError: -1025,
-    HttpUsersAddError: -1026,
+    HttpMysqlQueryError: -1024,
+    HttpMysqlDeleteError: -1025,
+    HttpMysqlAddError: -1026,
     HttpUsersExistSameUserNameError: -1027,
     HttpFileNotFoundError: -1028,
     HttpFileOpenError: -1029,
-    HttpUserNoThisUserError: -1030
+    HttpUserNoThisUserError: -1030,
+    HttpForbiddenIp: -1031
 }
 
 export default HttpStatus;

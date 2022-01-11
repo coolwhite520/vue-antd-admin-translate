@@ -6,7 +6,9 @@ import {
     GetComponentsApi,
     DeleteUserApi,
     PostUpgradeApi,
-    PostModifyUserMarkApi
+    PostModifyUserMarkApi,
+    IpTableTypeUrl,
+    IpTableUrl
 } from '@/services/api'
 
 import {request, METHOD,} from '@/utils/request'
@@ -49,6 +51,26 @@ export async function DeleteOperatorRecordById(id) {
 
 export async function DeleteAllOperatorRecord() {
     return request(GetUserOperatorRecordsApi, METHOD.DELETE)
+}
+
+export async function GetAllIpTableRecords() {
+    return request(IpTableUrl, METHOD.GET)
+}
+export async function AddIpTableRecord(obj) {
+    return request(IpTableUrl, METHOD.POST, obj)
+}
+
+
+export async function SwitchTableType(value) {
+    return request(IpTableTypeUrl, METHOD.POST, {type: value})
+}
+
+export async function GetTableType() {
+    return request(IpTableTypeUrl, METHOD.GET)
+}
+
+export async function DeleteIpTableRecordById(id) {
+    return request(`${IpTableUrl}/${id}`, METHOD.DELETE)
 }
 
 

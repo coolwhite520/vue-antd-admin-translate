@@ -99,14 +99,9 @@ const respLoginExpired = {
         const {router} = options
         if (response.data.code === HttpStatus.HttpUserExpired ||
             response.data.code === HttpStatus.HttpUserNoThisUserError ||
+            response.data.code === HttpStatus.HttpForbiddenIp ||
             response.data.code === HttpStatus.HttpUserNotLogin) {
-            let {sn} = response.data;
-            router.push({
-                path: '/login',
-                query: {
-                    sn
-                }
-            })
+            router.push({path: '/login',})
         }
         return response
     },
