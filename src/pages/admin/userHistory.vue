@@ -17,9 +17,15 @@
              rowKey="id" style="margin-top: 5px;"
              :border="true"
     >
-
+      <div slot="operator" slot-scope="text">
+        <div v-if="text ==='login'" style="color: #52c41a">
+          登录
+        </div>
+        <div v-else-if="text ==='logoff'" style="color: darkred">
+          退出
+        </div>
+      </div>
       <template slot="operation" slot-scope="text, record">
-
         <a-tooltip title="删除此条记录">
           <a @click="() => handleClickDelete(record)">
             <a-icon type="delete"/>

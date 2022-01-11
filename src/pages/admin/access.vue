@@ -1,5 +1,6 @@
 <template>
 <div>
+
   <a-card title="IP白名单">
     <div style="margin-top: 10px;margin-bottom: 5px;">
       <a-input-search
@@ -12,14 +13,23 @@
         </a-button>
       </a-input-search>
     </div>
-    <a-switch slot="extra" checked-children="关闭白名单" un-checked-children="启用白名单" :checked="ipRule==='white'" @change="onChangeSwitchWhite"/>
+    <div slot="extra" style="vertical-align: center">
+      <span style="color: darkred">当前IP:{{currUser.ip}}</span>&nbsp;
+      <a-switch  checked-children="关闭白名单" un-checked-children="启用白名单" :checked="ipRule==='white'" @change="onChangeSwitchWhite"/>
+    </div>
+
     <a-table :columns="columnsWhite" :data-source="tableDataWhite" rowKey="id" size="small" bordered>
       <a slot="name" slot-scope="text">{{ text }}</a>
       <template slot="operation" slot-scope="text, record">
         <a-tooltip title="删除此条记录">
-          <a @click="() => handleClickDelete(record)">
-            <a-icon type="delete"/>
-          </a>
+          <a-popconfirm
+              :title="confirmTitle(record)"
+              ok-text="确定"
+              cancel-text="取消"
+              @confirm="handleClickDelete(record)"
+          >
+            <a><a-icon type="delete"/></a>
+          </a-popconfirm>
         </a-tooltip>
       </template>
     </a-table>
@@ -38,7 +48,10 @@
         </a-button>
       </a-input-search>
     </div>
-    <a-switch slot="extra" checked-children="关闭黑名单" un-checked-children="启用黑名单" :checked="ipRule==='black'" @change="onChangeSwitchBlack"/>
+    <div slot="extra" style="vertical-align: center">
+      <span style="color: darkred">当前IP:{{currUser.ip}}</span>&nbsp;
+      <a-switch checked-children="关闭黑名单" un-checked-children="启用黑名单" :checked="ipRule==='black'" @change="onChangeSwitchBlack"/>
+    </div>
     <a-table :columns="columnsBlack" :data-source="tableDataBlack" rowKey="id" size="small" bordered>
       <a slot="name" slot-scope="text">{{ text }}</a>
       <template slot="operation" slot-scope="text, record">
@@ -62,6 +75,7 @@ import {
   SwitchTableType,
   GetTableType
 } from "../../services/admin";
+import {mapState} from "vuex";
 
 const columnsWhite = [
   {
@@ -119,31 +133,54 @@ export default {
       blackInputValue: "",
     }
   },
+  computed: {
+    ...mapState('account', { currUser: 'user'})
+  },
   created() {
     this.fetchIpTableRecords()
     this.GetIpTableRulType()
   },
   methods: {
-    fetchIpTableRecords() {
-      GetAllIpTableRecords()
-      .then((res) => {
-        if (res.data.code !== 200) {
-          this.$message.warning(res.data.msg);
-          return;
-        }
-        if (res.data.data !== null) {
-          this.tableDataWhite = res.data.data.filter(item => item.type === 'white')
-          this.tableDataBlack = res.data.data.filter(item => item.type === 'black')
+    confirmTitle(record) {
+      if (this.ipRule === '' || this.ipRule === 'black') {
+        return "确定要删除吗？"
+      } else {
+        if (record.ip === this.currUser.ip) {
+          return `当前启用了白名单，删除会导致您在当前主机无法继续使用，确定要这样做吗？`
         } else {
-          this.tableDataWhite = []
-          this.tableDataBlack = []
+          return "确定要删除吗？"
         }
-      })
-      .catch((err) => {
-        this.$message.warning(err)
+      }
+    },
+    async fetchIpTableRecords() {
+      return new Promise((resolve, reject) => {
+        GetAllIpTableRecords()
+            .then((res) => {
+              if (res.data.code !== 200) {
+                this.$message.warning(res.data.msg);
+                reject(res.data.msg)
+                return;
+              }
+              if (res.data.data !== null) {
+                this.tableDataWhite = res.data.data.filter(item => item.type === 'white')
+                this.tableDataBlack = res.data.data.filter(item => item.type === 'black')
+              } else {
+                this.tableDataWhite = []
+                this.tableDataBlack = []
+              }
+              resolve('done')
+            })
+            .catch((err) => {
+              this.$message.warning(err)
+              reject(err)
+            })
       })
     },
     handleClickDelete(record) {
+      if (record.ip === this.currUser.ip && this.ipRule === 'white') {
+        this.$message.warning("请先关闭白名单功能，然后进行删除操作，否则将导致您在当前主机无法继续使用！")
+        return
+      }
       DeleteIpTableRecordById(record.id)
       .then((res) => {
         if (res.data.code !== 200) {
@@ -158,7 +195,6 @@ export default {
       })
     },
     handleClickAdd(type) {
-      console.log(type)
       let value = ''
       if (type === 'white') {
         value = this.whiteInputValue
@@ -224,6 +260,7 @@ export default {
       }
       try {
         await this.SwitchIpTableRuleType(this.ipRule)
+        await this.fetchIpTableRecords()
         this.$message.success(tip);
       }catch (e) {
         this.$message.success(e.message);
@@ -258,7 +295,6 @@ export default {
             reject(res.data.msg);
             return;
           }
-
           resolve(res.data.msg)
         })
         .catch((err) => {
@@ -278,6 +314,7 @@ export default {
       }
       try {
         await this.SwitchIpTableRuleType(this.ipRule)
+        await this.fetchIpTableRecords()
         this.$message.success(tip);
       }catch (e) {
         this.$message.success(e.message);

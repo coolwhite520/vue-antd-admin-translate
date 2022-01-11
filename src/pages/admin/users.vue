@@ -66,17 +66,12 @@
                  size="small">
           <template slot="password" slot-scope="text, record">
             <div v-if="record.isEditable">
-              <a-input-search :ref="'input' + record.username" style="width: 80%" v-model="record.password"
-                              @search="handleClickGenerateRowPwd(record)" >
-                <a-button slot="enterButton" type="primary">
-                  <a-icon type="reddit" />
-                </a-button>
-              </a-input-search>
+              <a-input :ref="'input' + record.username" style="width: 80%" v-model="record.password">
+              </a-input>
               &nbsp;
               <a-tooltip title="保存新密码">
-                <a @click="() => handleClickSaveNewPwd(record)">
-                  <a-icon type="save"/>
-                </a>
+                <a-button @click="() => handleClickSaveNewPwd(record)" size="small" shape="circle" icon="save">
+                </a-button>
               </a-tooltip>
             </div>
             <div v-else>
@@ -85,12 +80,11 @@
           </template>
           <template slot="mark" slot-scope="text, record">
             <div v-if="record.isEditable">
-              <a-textarea  style="width: 80%" v-model="record.mark" :auto-size="{ minRows: 1, maxRows: 5 }" :allowClear="true"/>
+              <a-input  style="width: 80%" v-model="record.mark" :auto-size="{ minRows: 1, maxRows: 5 }" :allowClear="true"/>
               &nbsp;
               <a-tooltip title="保存新备注">
-                <a @click="() => handleClickSaveNewMark(record)">
-                  <a-icon type="save"/>
-                </a>
+                <a-button @click="() => handleClickSaveNewMark(record)" size="small" shape="circle" icon="save">
+                </a-button>
               </a-tooltip>
             </div>
             <div v-else>
