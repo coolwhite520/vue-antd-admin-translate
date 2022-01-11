@@ -270,8 +270,9 @@ export default {
             })
       })
     },
-    async sliceUploadFile(file, chunkSize = 1024 * 1024 * 50) {
+    async sliceUploadFile(file, ) {
       let totalSize = file.size; // 文件总大小
+      let chunkSize = Math.ceil(file.size / 100);
       let start = 0; // 每次上传的开始字节
       let end = start + chunkSize; // 每次上传的结尾字节
       let order = 1
@@ -322,6 +323,7 @@ export default {
 // 读取二进制文件
     async handleUploadUpdateFile() {
       const {fileList} = this;
+      this.uploading = true
       for (let file of fileList) {
         await this.sliceUploadFile(file)
         const index = this.fileList.indexOf(file);
@@ -329,6 +331,7 @@ export default {
         newFileList.splice(index, 1);
         this.fileList = newFileList;
       }
+      this.uploading = false
     }
   }
 }
