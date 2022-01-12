@@ -46,7 +46,17 @@
                    rowKey="id" style="margin-top: 20px;"
                    size="small">
             <template slot="file_name" slot-scope="text, record">
-              <a @click="() => handleClickDownFile(record)" type="link">{{ text }}</a>
+              <template v-if="record.trans_type === 1">
+                <a-popover>
+                  <template slot="content">
+                    <pic-preview :id="record.id"/>
+                  </template>
+                  <a @click="() => handleClickDownFile(record, 0)" type="link">{{ text }}</a>
+                </a-popover>
+              </template>
+              <template v-else>
+                <a @click="() => handleClickDownFile(record, 0)" type="link">{{ text }}</a>
+              </template>
             </template>
 
             <template slot="src_lang" slot-scope="text, record">
@@ -86,6 +96,7 @@
 </template>
 <script>
 
+import PicPreview from "../history/picPreview";
 const columns = [
   {
     title: '文件名',
@@ -118,6 +129,7 @@ import {PostDeleteRecord, PostTransDownFile, PostTransFile, PostTransUpload} fro
 
 export default {
   name: "TranslateFile",
+  components: {PicPreview},
   props: ["langList"],
   data() {
     return {
@@ -157,7 +169,7 @@ export default {
     handleClickDownFile(item) {
       let obj = {
         id: item.id,
-        field_name: "FileSrcDir"
+        type: 0
       }
       PostTransDownFile(obj)
       .then((res) => {

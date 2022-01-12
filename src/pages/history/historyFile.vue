@@ -16,7 +16,17 @@
              size="small">
 
       <template slot="file_name" slot-scope="text, record">
-        <a @click="() => handleClickDownFile(record, 0)" type="link">{{ text }}</a>
+        <template v-if="record.trans_type === 1">
+          <a-popover>
+            <template slot="content">
+              <pic-preview :id="record.id"/>
+            </template>
+            <a @click="() => handleClickDownFile(record, 0)" type="link">{{ text }}</a>
+          </a-popover>
+        </template>
+        <template v-else>
+          <a @click="() => handleClickDownFile(record, 0)" type="link">{{ text }}</a>
+        </template>
       </template>
 
       <template slot="file_content" slot-scope="text, record">
@@ -131,10 +141,12 @@
 <script>
 import {GetRecordsByType, PostDeleteRecord, PostTransDownFile, PostTransFile} from "../../services/translate";
 import TranslateStatus from "../../utils/translateStatus";
+import PicPreview from "./picPreview";
 
 
 export default {
   name: "historyFile",
+  components: {PicPreview},
   props: ["langList", "hisType", "columns"],
   data() {
     return {
@@ -237,7 +249,8 @@ export default {
           })
 
     },
-    handleClickDownFile(item, type) {
+
+    async handleClickDownFile(item, type) {
       PostTransDownFile({id: item.id, type})
           .then((res) => {
             var blob = new Blob([res.data]);
