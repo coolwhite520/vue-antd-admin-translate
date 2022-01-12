@@ -28,5 +28,10 @@ module.exports = {
 
 
   IpTableUrl: `${BASE_URL}/admin/ip_table`,
-  IpTableTypeUrl: `${BASE_URL}/admin/ip_table_type`
+  IpTableTypeUrl: `${BASE_URL}/admin/ip_table_type`,
+
+
+  UserFavorUrl: `${BASE_URL}/user/favor`,
+
+
 }

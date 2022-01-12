@@ -118,6 +118,7 @@ import History from "../history/history";
 // ];
 
 import {pinyin} from 'pinyin-pro';
+import {GetUserFavor} from "../../services/user";
 
 const _ = require("lodash");
 
@@ -140,6 +141,7 @@ export default {
       isServerException: false,
       showSrcLangTable: false,
       showDesLangTable: false,
+      userFavorLangs: [],
     }
   },
   computed: {
@@ -148,10 +150,26 @@ export default {
   async created() {
     await this.fetchSupportLangList();
     await this.fetchAllLangList();
-    this.groupByCharLangList = this.makeLangListGroupBy(this.allLanguageList)
+    await this.fetchUserFavor();
+    this.groupByCharLangList = this.makeLangListGroupBy(this.allLanguageList);
+
+    let favorList = this.userFavorLangs.map((el) => {
+      let l = this.allLanguageList.filter(a => a.en_name === el)
+      if (l.length > 0) {
+        return l[0];
+      } else {
+        return {en_name: ""}
+      }
+    }).filter((b) => b.en_name !== "");
+
     if (this.languageList.length > 3) {
-      this.srcLanguageList = this.languageList.slice(0,3)
-      this.desLanguageList = this.languageList.slice(0,3)
+      if (favorList.length === 3) {
+        this.srcLanguageList = favorList.slice(0,3)
+        this.desLanguageList = favorList.slice(0,3)
+      } else {
+        this.srcLanguageList = this.languageList.slice(0,3)
+        this.desLanguageList = this.languageList.slice(0,3)
+      }
     } else {
       this.srcLanguageList = this.languageList
       this.desLanguageList = this.languageList
@@ -253,6 +271,26 @@ export default {
           }
           this.languageList = res.data.data;
           resolve("done")
+        }).catch(err => {
+          this.$message.warning(err)
+          reject(err)
+        });
+      });
+    },
+    async fetchUserFavor() {
+      return new Promise((resolve, reject) => {
+        GetUserFavor().then((res) => {
+          if (res.data.code !== 200) {
+            this.$message.warning(res.data.msg)
+            reject(res.data.msg)
+            return
+          }
+          if (res.data.data.length > 0) {
+            this.userFavorLangs = res.data.data.split(",").slice(0, 3)
+          } else {
+            this.userFavorLangs = []
+          }
+          resolve('done')
         }).catch(err => {
           this.$message.warning(err)
           reject(err)

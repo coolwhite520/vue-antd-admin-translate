@@ -1,22 +1,21 @@
 <template>
   <div>
     <a-card>
-      <!-- 禁止浏览器自动填充密码的隐藏输入框 -->
-      <div style="text-align: center;margin-bottom: 10px;color: darkred">
-        密码必须包含大、小写字母、数字，并至少包含一个特殊字符且长度不能小于12位。
-      </div>
-      <a-input type="text" name="hideInput1" style="opacity:0;position:fixed;left:10000px;"></a-input>
-      <a-input type="password" name="hideInput2" style="opacity:0;position:fixed;left:10000px;"></a-input>
-      <!-- 防止浏览器自动填充密码的隐藏输入框 -->
       <div slot="title">
         <a-icon slot="prefix" type="lock"/>&nbsp;密码修改
       </div>
-      <a-row>
+      <!-- 禁止浏览器自动填充密码的隐藏输入框 -->
+      <div style="text-align: center;margin-bottom: 10px;color: gray">
+        密码必须包含大、小写字母、数字，并至少包含一个特殊字符且长度不能小于12位。
+      </div>
+      <a-row style="margin-top: 30px;">
         <a-col :xs="0" :sm="0" :md="8" :lg="8" :xl="8">
           &nbsp;
         </a-col>
         <a-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8">
-
+          <a-input type="text" name="hideInput1" style="opacity:0;position:fixed;left:10000px;"></a-input>
+          <a-input type="password" name="hideInput2" style="opacity:0;position:fixed;left:10000px;"></a-input>
+          <!-- 防止浏览器自动填充密码的隐藏输入框 -->
 
           <a-input placeholder="请输入原始密码"
                    style="margin-top: 5px;"
@@ -27,12 +26,13 @@
           </a-input>
 
           <a-input-search placeholder="请输入新密码"
-                   style="margin-top: 5px;"
-                   v-model="new_password" @search="handleClickGeneratePwd"
+                          style="margin-top: 5px;"
+                          v-model="new_password" @search="handleClickGeneratePwd"
           >
             <a-icon slot="prefix" type="lock" style="color:rgba(0,0,0,.25)"/>
             <a-button slot="enterButton" type="primary">
-                <a-icon type="reddit" />随机密码
+              <a-icon type="reddit"/>
+              随机密码
             </a-button>
           </a-input-search>
 
@@ -45,18 +45,50 @@
           <a-button type="primary" style="margin-top: 20px;width: 100%" @click="handleClickSubmit">
             提交
           </a-button>
+
+        </a-col>
+        <a-col :xs="0" :sm="0" :md="8" :lg="8" :xl="8">
+          &nbsp;
         </a-col>
       </a-row>
-      <a-col :xs="0" :sm="0" :md="8" :lg="8" :xl="8">
-        &nbsp;
-      </a-col>
+    </a-card>
+    <a-card style="margin-top: 20px;">
+      <div slot="title">
+        <a-icon type="sort-descending"/>&nbsp;常用语言排序
+      </div>
+      <a-row v-show="languageList.length > 3 && pwdValidator.length === 0 ">
+        <a-col :xs="0" :sm="0" :md="8" :lg="8" :xl="8">
+          &nbsp;
+        </a-col>
+        <a-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8">
+          <div style="margin-bottom: 10px;color: gray">常用语言序列会显示在翻译页面的滚动菜单上，便于您的操作。[注：只取前三项]</div>
+          <a-select
+              mode="multiple"
+              v-model="userFavorLangs"
+              style="width: 100%"
+              placeholder="请选择常用语言，此序列只取前三个选项。"
+              @change="handleChange"
+              :allowClear="true"
+          >
+            <a-select-option v-for="item in languageList" :key="item.en_name">
+              {{ item.cn_name }}
+            </a-select-option>
+          </a-select>
+          <a-button style="margin-top: 20px;width: 100%" type="primary" @click="handleClickSureFavor">确定</a-button>
+
+        </a-col>
+        <a-col :xs="0" :sm="0" :md="8" :lg="8" :xl="8">
+          &nbsp;
+        </a-col>
+      </a-row>
     </a-card>
   </div>
 </template>
 
 <script>
-import {logout, PostModifyPassword} from "../../services/user";
+import {logout, PostModifyPassword, GetUserFavor, AddUserNewFavor} from "../../services/user";
 import {mapState} from "vuex";
+import {GetTransLangList} from "../../services/translate";
 
 export default {
   name: "self",
@@ -66,17 +98,84 @@ export default {
       new_password: "",
       second_password: "",
       pwdValidator: [],
+      languageList: [],
+      userFavorLangs: [],
     };
   },
   computed: {
-    ...mapState('account', { currUser: 'user'})
+    ...mapState('account', {currUser: 'user'})
   },
-  mounted() {
+  async mounted() {
     const {pwdValidator} = this.currUser
-    console.log(pwdValidator)
     this.pwdValidator = pwdValidator;
+    await this.fetchSupportLangList()
+    await this.fetchUserFavor()
   },
   methods: {
+    handleClickSureFavor() {
+      if (this.userFavorLangs.length < 3) {
+        this.$message.warning("您选择的项目数量不够三种，请继续添加。")
+        return
+      }
+      AddUserNewFavor(this.userFavorLangs.join(","))
+          .then((res) => {
+            if (res.data.code !== 200) {
+              this.$message.warning(res.data.msg)
+              return
+            }
+            this.$message.success(res.data.msg);
+            this.$router.push("/translate")
+          })
+          .catch(err => {
+            this.$message.warning(err)
+          });
+    },
+    handleChange(value) {
+      this.userFavorLangs = value
+    },
+    async fetchSupportLangList() {
+      return new Promise((resolve, reject) => {
+        GetTransLangList()
+            .then((res) => {
+              if (res.data.code !== 200) {
+                this.$message.warning(res.data.msg)
+                reject(res.data.msg)
+                return
+              }
+              if (res.data.data.length < 2) {
+                this.$message.warning("获取的支持语言列表错误")
+                return
+              }
+              this.languageList = res.data.data;
+              resolve("done")
+            })
+            .catch(err => {
+              this.$message.warning(err)
+              reject(err)
+            });
+      });
+    },
+    async fetchUserFavor() {
+      return new Promise((resolve, reject) => {
+        GetUserFavor().then((res) => {
+          if (res.data.code !== 200) {
+            this.$message.warning(res.data.msg)
+            reject(res.data.msg)
+            return
+          }
+          if (res.data.data.length > 0) {
+            this.userFavorLangs = res.data.data.split(",").slice(0, 3)
+          } else {
+            this.userFavorLangs = []
+          }
+          resolve('done')
+        }).catch(err => {
+          this.$message.warning(err)
+          reject(err)
+        });
+      });
+    },
+
     handleClickGeneratePwd() {
       let password = this.$GeneratePwd();
       this.new_password = password

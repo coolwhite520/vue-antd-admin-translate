@@ -1,4 +1,4 @@
-import {LOGIN, LOGOFF, ROUTES, PostModifyPasswordAPi} from '@/services/api'
+import {LOGIN, LOGOFF, ROUTES, PostModifyPasswordAPi, UserFavorUrl} from '@/services/api'
 import {request, METHOD, removeAuthorization} from '@/utils/request'
 
 /**
@@ -21,6 +21,14 @@ export async function PostModifyPassword(obj) {
 
 export async function getRoutesConfig() {
   return request(ROUTES, METHOD.GET)
+}
+
+export async function GetUserFavor() {
+    return request(UserFavorUrl, METHOD.GET)
+}
+
+export async function AddUserNewFavor(favor) {
+    return request(UserFavorUrl, METHOD.POST, {favor})
 }
 
 /**

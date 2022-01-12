@@ -1,7 +1,7 @@
 <template>
   <div>
       <a-card title="新增用户">
-        <div style="margin-bottom: 10px;color: darkred">
+        <div style="margin-bottom: 10px;color: gray">
           密码必须包含大、小写字母、数字，并至少包含一个特殊字符且长度不能小于12位。
         </div>
         <!-- 禁止浏览器自动填充密码的隐藏输入框 -->
