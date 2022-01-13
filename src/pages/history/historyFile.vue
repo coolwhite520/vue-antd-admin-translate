@@ -47,14 +47,22 @@
         </div>
         <div v-else>
           <a-select :value="record.src_lang" style="width: 120px"
-                    @change="(value) => { handleChangeSrcLang(value, record) }" size="small">
+                    @change="(value) => { handleChangeSrcLang(value, record) }"
+                    size="small"
+                    :showSearch="true"
+                    :filter-option="filterOption"
+          >
             <a-select-option v-for="item in langList" :key="item.en_name">
               {{ item.cn_name }}
             </a-select-option>
           </a-select>
           ->
           <a-select :value="record.des_lang" style="width: 120px"
-                    @change="(value) => { handleChangeDesLang(value, record) }" size="small">
+                    @change="(value) => { handleChangeDesLang(value, record) }"
+                    size="small"
+                    :showSearch="true"
+                    :filter-option="filterOption"
+          >
             <a-select-option v-for="item in langList" :key="item.en_name">
               {{ item.cn_name }}
             </a-select-option>
@@ -177,6 +185,11 @@ export default {
     this.fetchTableData()
   },
   methods: {
+    filterOption(input, option) {
+      return (
+          option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+      );
+    },
     isOverState(state) {
       if (state === TranslateStatus.TransTranslateSuccess ||
           state === TranslateStatus.TransTranslateFailed ||

@@ -61,7 +61,10 @@
 
             <template slot="src_lang" slot-scope="text, record">
               <a-select :value="record.src_lang" style="width: 120px"
-                        @change="(value) => { handleChangeSrcLang(value, record) }">
+                        @change="(value) => { handleChangeSrcLang(value, record) }"
+                        :showSearch="true"
+                        :filter-option="filterOption"
+              >
                 <a-select-option v-for="item in langList" :key="item.en_name">
                   {{ item.cn_name }}
                 </a-select-option>
@@ -70,7 +73,10 @@
 
             <template slot="des_lang" slot-scope="text, record">
               <a-select :value="record.des_lang" style="width: 120px"
-                        @change="(value) => { handleChangeDesLang(value, record) }">
+                        @change="(value) => { handleChangeDesLang(value, record) }"
+                        :showSearch="true"
+                        :filter-option="filterOption"
+              >
                 <a-select-option v-for="item in langList" :key="item.en_name">
                   {{ item.cn_name }}
                 </a-select-option>
@@ -143,6 +149,11 @@ export default {
     }
   },
   methods: {
+    filterOption(input, option) {
+      return (
+          option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+      );
+    },
     handleChange(info) {
       console.log(info)
     },
