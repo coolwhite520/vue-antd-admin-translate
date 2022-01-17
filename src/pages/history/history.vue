@@ -2,13 +2,13 @@
   <div>
     <a-tabs default-active-key="0">
       <a-tab-pane key="0" tab="文本">
-        <history-content/>
+        <history-content :langList="langList"/>
       </a-tab-pane>
       <a-tab-pane key="1" tab="图片">
-        <history-file :langList="langList" :hisType="1" :columns="columnsImage"/>
+        <history-file :langList="langList" :hisType="1" :columns="columnsImage" :tableHeight="300"/>
       </a-tab-pane>
       <a-tab-pane key="2" tab="文档">
-        <history-file :langList="langList" :hisType="2" :columns="columnsDocFile"/>
+        <history-file :langList="langList" :hisType="2" :columns="columnsDocFile" :tableHeight="300"/>
       </a-tab-pane>
     </a-tabs>
   </div>

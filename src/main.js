@@ -5,6 +5,7 @@ import './theme/index.less'
 import Antd from 'ant-design-vue'
 import Viser from 'viser-vue'
 import QRCode from 'qrcode'
+import {pinyin} from 'pinyin-pro';
 // import '@/mock'
 import store from './store'
 import 'animate.css/source/animate.css'
@@ -74,6 +75,11 @@ Vue.prototype.$PasswordValidator = (password) => {
       .has().not().spaces(1, "不能包含空格")
       // .is().not().oneOf(['Passw0rd', 'Password123']); // Blacklist these values
   return schema.validate(password, { details: true });
+}
+
+Vue.prototype.$Convert2Pinyin = (str) => {
+  let py_name = pinyin(str, {toneType: 'none'});
+  return py_name.replaceAll(" ", "");
 }
 
 Vue.prototype.$GeneratePwd = () => {

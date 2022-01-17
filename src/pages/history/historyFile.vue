@@ -8,7 +8,7 @@
         <a-icon type="sync" :spin="loading" @click="handleClickFresh"/>
       </a-tooltip>
     </div>
-    <a-table :scroll="{ x: 1200, y: 300 }"
+    <a-table :scroll="{ x: 1200, y: tableHeight }"
              :pagination="false"
              :columns="columns"
              :data-source="tableData"
@@ -35,15 +35,18 @@
         </div>
       </template>
 
-      <!--      <template  slot="error" slot-scope="text, record">-->
-      <!--        <p  v-if="record.error.length > 0" slot="expandedRowRender" style="margin: 0">-->
-      <!--          {{ record.error }}-->
-      <!--        </p>-->
-      <!--      </template>-->
+      <template slot="trans_type" slot-scope="text">
+        <div v-if="text === 1">
+          <i>图片</i>
+        </div>
+        <div v-if="text === 2">
+          <b>文档</b>
+        </div>
+      </template>
 
       <template slot="lang" slot-scope="text, record">
         <div v-if="record.state !== TranslateStatus.TransNoRun">
-          {{ record.src_lang }} -> {{ record.des_lang }}
+          {{ record.src_lang_cn }} -> {{ record.des_lang_cn }}
         </div>
         <div v-else>
           <a-select :value="record.src_lang" style="width: 120px"
@@ -155,7 +158,7 @@ import PicPreview from "./picPreview";
 export default {
   name: "historyFile",
   components: {PicPreview},
-  props: ["langList", "hisType", "columns"],
+  props: ["langList", "hisType", "columns", "tableHeight"],
   data() {
     return {
       TranslateStatus,
@@ -185,7 +188,21 @@ export default {
     this.fetchTableData()
   },
   methods: {
+    convert2ChineseLang(en_name) {
+      for (let item of this.langList) {
+        if(item.en_name === en_name) {
+          return item.cn_name;
+        }
+      }
+      return "";
+    },
     filterOption(input, option) {
+      let reg = /^[a-zA-Z][a-zA-Z0-9_]*$/
+      if (reg.test(input)) {
+        let text = option.componentOptions.children[0].text;
+        let pinYin = this.$Convert2Pinyin(text)
+        return pinYin.startsWith(input);
+      }
       return (
           option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
       );
@@ -208,7 +225,15 @@ export default {
         }
         let {list, total} = res.data.data
         if (list !== null) {
-          this.tableData = list
+          this.tableData = list.map((item) => {
+            let src_lang_cn = this.convert2ChineseLang(item.src_lang);
+            let des_lang_cn = this.convert2ChineseLang(item.des_lang);
+            return {
+              ...item,
+              src_lang_cn,
+              des_lang_cn,
+            }
+          })
           // 如果不是人为开启的自动刷新，那么就判断一下，是否应该停止了
           if (!this.isManualClickAutoFresh) {
             let isAllOver = true

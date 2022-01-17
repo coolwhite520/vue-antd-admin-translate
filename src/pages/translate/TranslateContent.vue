@@ -20,7 +20,6 @@
             v-model="outContent"
             :auto-size="{ minRows: 15, maxRows: 15 }"
             size="large"
-            :disabled="true"
         />
         <div style="text-align: right;margin-top: 10px;">
           <a-button  @click="handleClickEmpty"><a-icon type="delete" />&nbsp;清空</a-button>

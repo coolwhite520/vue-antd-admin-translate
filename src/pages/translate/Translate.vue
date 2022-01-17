@@ -29,8 +29,10 @@
                   </a-tab-pane>
                 </template>
                 <template v-if="languageList.length > 3" slot="tabBarExtraContent">
-                  <a-button shape="circle" :icon="!showSrcLangTable?'down':'up'"
-                            @click="handleClickSrcLangTbl"/>
+
+                  <a-button @click="handleClickSrcLangTbl" type="link">
+                  更多语言 <a-icon :type="!showSrcLangTable?'down':'up'" />
+                  </a-button>
                 </template>
               </a-tabs>
             </a-col>
@@ -47,8 +49,9 @@
                   </a-tab-pane>
                 </template>
                 <template v-if="languageList.length > 3" slot="tabBarExtraContent">
-                  <a-button shape="circle" :icon="!showDesLangTable?'down':'up'"
-                            @click="handleClickDesLangTbl"/>
+                  <a-button @click="handleClickDesLangTbl" type="link">
+                    更多语言 <a-icon :type="!showDesLangTable?'down':'up'" />
+                  </a-button>
                 </template>
               </a-tabs>
             </a-col>
@@ -117,7 +120,7 @@ import History from "../history/history";
 //   "German",
 // ];
 
-import {pinyin} from 'pinyin-pro';
+
 import {GetUserFavor} from "../../services/user";
 
 const _ = require("lodash");
@@ -300,7 +303,7 @@ export default {
     // 给语言分组
     makeLangListGroupBy(list) {
       let tempList = list.map((item) => {
-        let py_name = pinyin(item.cn_name, {toneType: 'none'});
+        let py_name = this.$Convert2Pinyin(item.cn_name);
         let isSupport = this.isInLangList(item.en_name, this.languageList)
         return {
           ...item,
@@ -360,8 +363,15 @@ export default {
     },
     onChangeInput() {
       let curList = this.allLanguageList.filter((item) => {
+        let reg = /^[a-zA-Z][a-zA-Z0-9_]*$/
+        if (reg.test(this.searchInputValue)) {
+          let pinYin = this.$Convert2Pinyin(item.cn_name)
+          console.log(pinYin)
+          return pinYin.startsWith(this.searchInputValue);
+        }
         return item.cn_name.indexOf(this.searchInputValue) !== -1
       })
+
       this.groupByCharLangList = this.makeLangListGroupBy(curList)
     },
 

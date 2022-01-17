@@ -69,6 +69,7 @@
               placeholder="请选择常用语言，此序列只取前三个选项。"
               @change="handleChange"
               :allowClear="true"
+              :filter-option="filterOption"
           >
             <a-select-option v-for="item in languageList" :key="item.en_name">
               {{ item.cn_name }}
@@ -112,6 +113,17 @@ export default {
     await this.fetchUserFavor()
   },
   methods: {
+    filterOption(input, option) {
+      let reg = /^[a-zA-Z][a-zA-Z0-9_]*$/
+      if (reg.test(input)) {
+        let text = option.componentOptions.children[0].text;
+        let pinYin = this.$Convert2Pinyin(text)
+        return pinYin.startsWith(input);
+      }
+      return (
+          option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+      );
+    },
     handleClickSureFavor() {
       if (this.userFavorLangs.length < 3) {
         this.$message.warning("您选择的项目数量不够三种，请继续添加。")

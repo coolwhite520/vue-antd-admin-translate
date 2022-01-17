@@ -11,7 +11,7 @@
       </template>
 
       <template slot="lang" slot-scope="text, record">
-        {{ record.src_lang }} -> {{ record.des_lang }}
+        {{ record.src_lang_cn }} -> {{ record.des_lang_cn }}
       </template>
       <template slot="state_describe" slot-scope="text, record">
         <div v-if="record.state === TranslateStatus.TransTranslateSuccess" style="color: #52c41a;">
@@ -101,6 +101,7 @@ const columnsContent = [
 
 export default {
   name: "historyContent",
+  props: ["langList"],
   data() {
     return {
       TranslateStatus,
@@ -117,6 +118,14 @@ export default {
     this.fetchTableData()
   },
   methods: {
+    convert2ChineseLang(en_name) {
+      for (let item of this.langList) {
+        if(item.en_name === en_name) {
+          return item.cn_name;
+        }
+      }
+      return "";
+    },
     fetchTableData() {
       GetRecordsByType(0, (this.current - 1) * this.pageSize, this.pageSize).then(res => {
         if (res.data.code !== 200) {
@@ -125,7 +134,15 @@ export default {
         }
         let {list, total} = res.data.data
         if (list !== null) {
-          this.tableData = list
+          this.tableData = list.map((item) => {
+            let src_lang_cn = this.convert2ChineseLang(item.src_lang);
+            let des_lang_cn = this.convert2ChineseLang(item.des_lang);
+            return {
+              ...item,
+              src_lang_cn,
+              des_lang_cn,
+            }
+          })
         } else {
           this.tableData = []
         }
@@ -143,7 +160,7 @@ export default {
     },
     handleClickCopy(item) {
       let content = `开始时间:${item.create_at} \r\n
-语言:${item.src_lang} -> ${item.des_lang}\r\n
+语言:${item.src_lang_cn} -> ${item.des_lang_cn}\r\n
 文本：${item.content} \r\n
 翻译结果：${item.output_content}
 `
