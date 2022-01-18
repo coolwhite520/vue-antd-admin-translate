@@ -8,7 +8,8 @@ import {
     PostUpgradeApi,
     PostModifyUserMarkApi,
     IpTableTypeUrl,
-    IpTableUrl
+    IpTableUrl,
+    GetAllTransRecordsApi
 } from '@/services/api'
 
 import {request, METHOD,} from '@/utils/request'
@@ -16,6 +17,11 @@ import {request, METHOD,} from '@/utils/request'
 export async function GetAllUsers() {
     return request(GetAllUsersApi, METHOD.GET)
 }
+
+export async function GetAllTransRecords(offset, count) {
+    return request(`${GetAllTransRecordsApi}/${offset}/${count} `, METHOD.GET)
+}
+
 export async function GetComponents() {
     return request(GetComponentsApi, METHOD.GET)
 }

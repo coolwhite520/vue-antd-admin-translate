@@ -61,7 +61,7 @@
                  :pagination="false"
                  :columns="columnsUser"
                  :data-source="tableData"
-                 border
+                 :bordered="true"
                  rowKey="id" style="margin-top: 20px;"
                  size="small">
           <template slot="password" slot-scope="text, record">

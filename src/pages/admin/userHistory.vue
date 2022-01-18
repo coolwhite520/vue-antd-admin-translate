@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <a-card>
     <div style="text-align: right">
       <a-popconfirm
           title="确定要清空所有数据吗？"
@@ -15,7 +15,7 @@
              :columns="columnsUserOperatorRecords"
              :data-source="tableData"
              rowKey="id" style="margin-top: 5px;"
-             :border="true"
+             :bordered="true"
     >
       <div slot="operator" slot-scope="text">
         <div v-if="text ==='login'" style="color: #52c41a">
@@ -50,7 +50,7 @@
         </template>
       </a-pagination>
     </div>
-  </div>
+  </a-card>
 </template>
 
 <script>

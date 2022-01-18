@@ -5,18 +5,21 @@
         &nbsp;
       </a-col>
       <a-col :xs="24" :sm="24" :md="18" :lg="18" :xl="18">
-        <a-tabs default-active-key="0">
+        <a-tabs :activeKey="activeKey" @change="onChangeTabs">
           <a-tab-pane key="0" tab="用户管理">
-            <user-manage/>
+            <user-manage v-if="activeKey === '0'"/>
           </a-tab-pane>
           <a-tab-pane key="1" tab="IP管理">
-            <access-manager/>
+            <access-manager v-if="activeKey === '1'"/>
           </a-tab-pane>
           <a-tab-pane key="2" tab="访问记录">
-            <user-history/>
+            <user-history v-if="activeKey === '2'"/>
           </a-tab-pane>
-          <a-tab-pane key="3" tab="系统维护">
-            <system-manage/>
+          <a-tab-pane key="3" tab="翻译记录">
+            <records v-if="activeKey === '3'"/>
+          </a-tab-pane>
+          <a-tab-pane key="4" tab="系统维护">
+            <system-manage v-if="activeKey === '4'"/>
           </a-tab-pane>
         </a-tabs>
       </a-col>
@@ -33,9 +36,20 @@ import UserManage from "./users";
 import SystemManage from "./system";
 import AccessManager from "./access";
 import UserHistory from "./userHistory";
+import Records from "./records"
 export default {
   name: "admin",
-  components: {UserHistory, AccessManager, SystemManage, UserManage},
+  data() {
+    return {
+      activeKey: '0',
+    }
+  },
+  methods: {
+    onChangeTabs(val) {
+      this.activeKey = val
+    }
+  },
+  components: {UserHistory, AccessManager, SystemManage, UserManage, Records},
 }
 </script>
 
