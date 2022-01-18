@@ -180,15 +180,19 @@ export default {
             return;
           })
     },
-    handleClickDownFile(item, type) {
+    async handleClickDownFile(item, type) {
       PostTransDownFile({id: item.id, type})
           .then((res) => {
-            var blob = new Blob([res.data]);
-            var url = window.URL.createObjectURL(blob);
-            var aLink = document.createElement("a");
+            let blob = new Blob([res.data]);
+            let url = window.URL.createObjectURL(blob);
+            let aLink = document.createElement("a");
             aLink.style.display = "none";
             aLink.href = url;
-            aLink.setAttribute("download", item.file_name);
+            if (type === 0) {
+              aLink.setAttribute("download", item.file_name);
+            } else {
+              aLink.setAttribute("download", item.file_name + ".txt");
+            }
             document.body.appendChild(aLink);
             aLink.click();
             document.body.removeChild(aLink); //下载完成移除元素

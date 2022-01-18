@@ -291,9 +291,9 @@ export default {
     async handleClickDownFile(item, type) {
       PostTransDownFile({id: item.id, type})
           .then((res) => {
-            var blob = new Blob([res.data]);
-            var url = window.URL.createObjectURL(blob);
-            var aLink = document.createElement("a");
+            let blob = new Blob([res.data]);
+            let url = window.URL.createObjectURL(blob);
+            let aLink = document.createElement("a");
             aLink.style.display = "none";
             aLink.href = url;
             if (type === 0) {

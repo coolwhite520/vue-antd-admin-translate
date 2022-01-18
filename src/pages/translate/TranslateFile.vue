@@ -200,7 +200,7 @@ const columns = [
 ];
 
 
-import {PostDeleteRecord, PostTransDownFile, PostTransFile, PostTransUpload} from "../../services/translate";
+import {PostDeleteRecord, PostTransFile, PostTransUpload} from "../../services/translate";
 import HistoryFile from "../history/historyFile";
 
 export default {
@@ -254,28 +254,6 @@ export default {
       }
       this.fileList = [...this.fileList, file];
       return false;
-    },
-    handleClickDownFile(item) {
-      let obj = {
-        id: item.id,
-        type: 0
-      }
-      PostTransDownFile(obj)
-          .then((res) => {
-            var blob = new Blob([res.data]);
-            var url = window.URL.createObjectURL(blob);
-            var aLink = document.createElement("a");
-            aLink.style.display = "none";
-            aLink.href = url;
-            aLink.setAttribute("download", item.file_name);
-            document.body.appendChild(aLink);
-            aLink.click();
-            document.body.removeChild(aLink); //下载完成移除元素
-            window.URL.revokeObjectURL(url); //释放掉blob对象
-          })
-          .catch((err) => {
-            this.$message.error(err.message);
-          })
     },
     handleClickDelete(item) {
       PostDeleteRecord({record_id: item.id}).then((res) => {

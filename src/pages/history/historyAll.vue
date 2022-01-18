@@ -198,7 +198,7 @@
 
 
 <script>
-import {PostDeleteRecord, PostTransDownFile} from "../../services/translate";
+import {PostDeleteRecord, PostTransDownFile, GetTransLangList} from "../../services/translate";
 import TranslateStatus from "../../utils/translateStatus";
 import {GetAllTransRecords} from "../../services/admin";
 import PicPreview from "./picPreview";
@@ -242,7 +242,7 @@ const columnsContent = [
 export default {
   name: "historyAll",
   components: {PicPreview},
-  props: ["langList", "tableHeight"],
+  props: ["tableHeight"],
   data() {
     return {
       TranslateStatus,
@@ -250,6 +250,7 @@ export default {
       visible: false,
       loading: false,
       tableData: [],
+      langList: [],
       pageSizeOptions: ['10', '20', '30', '40', '500'],
       current: 1,
       pageSize: 10,
@@ -257,7 +258,8 @@ export default {
       modalContent: "",
     }
   },
-  created() {
+  async created() {
+    await this.fetchSupportLangList()
     this.fetchTableData()
   },
   methods: {
@@ -292,6 +294,26 @@ export default {
         }
       }
       return "";
+    },
+    async fetchSupportLangList() {
+      return new Promise((resolve, reject) => {
+        GetTransLangList().then((res) => {
+          if (res.data.code !== 200) {
+            this.$message.warning(res.data.msg)
+            reject(res.data.msg)
+            return
+          }
+          if (res.data.data.length < 2) {
+            this.$message.warning("获取的支持语言列表错误")
+            return
+          }
+          this.langList = res.data.data;
+          resolve("done")
+        }).catch(err => {
+          this.$message.warning(err)
+          reject(err)
+        });
+      });
     },
     fetchTableData() {
       GetAllTransRecords((this.current - 1) * this.pageSize, this.pageSize).then(res => {
@@ -348,15 +370,19 @@ export default {
             return;
           })
     },
-    handleClickDownFile(item, type) {
+    async handleClickDownFile(item, type) {
       PostTransDownFile({id: item.id, type})
           .then((res) => {
-            var blob = new Blob([res.data]);
-            var url = window.URL.createObjectURL(blob);
-            var aLink = document.createElement("a");
+            let blob = new Blob([res.data]);
+            let url = window.URL.createObjectURL(blob);
+            let aLink = document.createElement("a");
             aLink.style.display = "none";
             aLink.href = url;
-            aLink.setAttribute("download", item.file_name);
+            if (type === 0) {
+              aLink.setAttribute("download", item.file_name);
+            } else {
+              aLink.setAttribute("download", item.file_name + ".txt");
+            }
             document.body.appendChild(aLink);
             aLink.click();
             document.body.removeChild(aLink); //下载完成移除元素
