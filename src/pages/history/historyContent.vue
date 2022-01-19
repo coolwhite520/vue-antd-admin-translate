@@ -191,7 +191,7 @@ export default {
             if (type === 0) {
               aLink.setAttribute("download", item.file_name);
             } else {
-              aLink.setAttribute("download", item.file_name + ".txt");
+              aLink.setAttribute("download", item.file_name + item.out_file_ext);
             }
             document.body.appendChild(aLink);
             aLink.click();
