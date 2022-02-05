@@ -16,7 +16,7 @@
             <user-history v-if="activeKey === '2'"/>
           </a-tab-pane>
           <a-tab-pane key="3" tab="翻译记录">
-            <records v-if="activeKey === '3'"/>
+            <history-admin-see :tableHeight="500" v-if="activeKey === '3'"/>
           </a-tab-pane>
           <a-tab-pane key="4" tab="系统维护">
             <system-manage v-if="activeKey === '4'"/>
@@ -36,7 +36,7 @@ import UserManage from "./users";
 import SystemManage from "./system";
 import AccessManager from "./access";
 import UserHistory from "./userHistory";
-import Records from "./records"
+import HistoryAdminSee from "../history/historyAdminSee"
 export default {
   name: "admin",
   data() {
@@ -49,7 +49,7 @@ export default {
       this.activeKey = val
     }
   },
-  components: {UserHistory, AccessManager, SystemManage, UserManage, Records},
+  components: {UserHistory, AccessManager, SystemManage, UserManage, HistoryAdminSee},
 }
 </script>
 

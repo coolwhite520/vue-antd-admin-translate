@@ -35,13 +35,13 @@ const columnsImage = [
     ellipsis: true,
     align: 'center'
   },
-  {
-    title: '识别内容',
-    dataIndex: 'file_content',
-    scopedSlots: {customRender: 'file_content'},
-    ellipsis: true,
-    align: 'center'
-  },
+  // {
+  //   title: '识别内容',
+  //   dataIndex: 'file_content',
+  //   scopedSlots: {customRender: 'file_content'},
+  //   ellipsis: true,
+  //   align: 'center'
+  // },
   {
     title: '语言',
     dataIndex: 'lang',
@@ -91,13 +91,13 @@ const columnsDocFile = [
     ellipsis: true,
     align: 'center'
   },
-  {
-    title: '文档内容',
-    dataIndex: 'file_content',
-    scopedSlots: {customRender: 'file_content'},
-    ellipsis: true,
-    align: 'center'
-  },
+  // {
+  //   title: '文档内容',
+  //   dataIndex: 'file_content',
+  //   scopedSlots: {customRender: 'file_content'},
+  //   ellipsis: true,
+  //   align: 'center'
+  // },
   {
     title: '语言',
     dataIndex: 'lang',

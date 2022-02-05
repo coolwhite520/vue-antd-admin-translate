@@ -39,63 +39,6 @@
         </a-button>
       </div>
 
-
-      <!--          <a-table :scroll="{ y: 400 }"-->
-      <!--                   v-show="this.tableData.length>0"-->
-      <!--                   :columns="columns"-->
-      <!--                   :data-source="tableData"-->
-      <!--                   rowKey="id" style="margin-top: 20px;"-->
-      <!--                   size="small">-->
-      <!--            <template slot="file_name" slot-scope="text, record">-->
-      <!--              <template v-if="record.trans_type === 1">-->
-      <!--                <a-popover>-->
-      <!--                  <template slot="content">-->
-      <!--                    <pic-preview :id="record.id"/>-->
-      <!--                  </template>-->
-      <!--                  <a @click="() => handleClickDownFile(record, 0)" type="link">{{ text }}</a>-->
-      <!--                </a-popover>-->
-      <!--              </template>-->
-      <!--              <template v-else>-->
-      <!--                <a @click="() => handleClickDownFile(record, 0)" type="link">{{ text }}</a>-->
-      <!--              </template>-->
-      <!--            </template>-->
-
-      <!--            <template slot="src_lang" slot-scope="text, record">-->
-      <!--              <a-select :value="record.src_lang" style="width: 120px"-->
-      <!--                        @change="(value) => { handleChangeSrcLang(value, record) }"-->
-      <!--                        :showSearch="true"-->
-      <!--                        :filter-option="filterOption"-->
-      <!--              >-->
-      <!--                <a-select-option v-for="item in langList" :key="item.en_name">-->
-      <!--                  {{ item.cn_name }}-->
-      <!--                </a-select-option>-->
-      <!--              </a-select>-->
-      <!--            </template>-->
-
-      <!--            <template slot="des_lang" slot-scope="text, record">-->
-      <!--              <a-select :value="record.des_lang" style="width: 120px"-->
-      <!--                        @change="(value) => { handleChangeDesLang(value, record) }"-->
-      <!--                        :showSearch="true"-->
-      <!--                        :filter-option="filterOption"-->
-      <!--              >-->
-      <!--                <a-select-option v-for="item in langList" :key="item.en_name">-->
-      <!--                  {{ item.cn_name }}-->
-      <!--                </a-select-option>-->
-      <!--              </a-select>-->
-      <!--            </template>-->
-
-      <!--            <template slot="operation" slot-scope="text, record">-->
-      <!--              <div style="text-align: center">-->
-      <!--                <a-button @click="() => handleClickTranslate(record)" type="primary">翻译</a-button>-->
-      <!--                <a-tooltip title="删除此条记录">-->
-      <!--                  <a @click="() => handleClickDelete(record)" style="margin-left: 20px;">-->
-      <!--                    <a-icon type="delete"/>-->
-      <!--                  </a>-->
-      <!--                </a-tooltip>-->
-
-      <!--              </div>-->
-      <!--            </template>-->
-      <!--          </a-table>-->
     </a-card>
 
     <a-card style="margin-top: 20px;">
@@ -132,13 +75,13 @@ const columnsAllFile = [
     align: 'center'
   },
 
-  {
-    title: '识别内容',
-    dataIndex: 'file_content',
-    scopedSlots: {customRender: 'file_content'},
-    ellipsis: true,
-    align: 'center'
-  },
+  // {
+  //   title: '识别内容',
+  //   dataIndex: 'file_content',
+  //   scopedSlots: {customRender: 'file_content'},
+  //   ellipsis: true,
+  //   align: 'center'
+  // },
   {
     title: '语言',
     dataIndex: 'lang',

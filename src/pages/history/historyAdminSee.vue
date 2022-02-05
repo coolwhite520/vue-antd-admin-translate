@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <a-card>
     <a-modal v-model="visible" title="内容" ok-text="复制" cancel-text="取消" @ok="copyModal" @cancel="hideModal">
       <div style="height: 100px;overflow-y: auto;">{{modalContent}}</div>
     </a-modal>
@@ -63,22 +63,17 @@
                     <pic-preview :id="record.id"/>
                   </template>
                   <a @click="() => handleClickDownFile(record, 0)" type="link">
-                    {{ record.file_name }}
+                    {{ record.file_name + record.file_ext }}
                   </a>
                 </a-popover>
               </div>
             </a-col>
             <a-col :span="8">
-              <div>识别内容：
-                <span v-if="record.state >= TranslateStatus.TransExtractSuccess">
-                  <a @click="() => handleClickDownFile(record, 1)" type="link">下载</a>
-                </span>
-              </div>
-            </a-col>
-            <a-col :span="8">
               <div>翻译结果：
                 <span v-if="record.state >= TranslateStatus.TransTranslateSuccess">
-                  <a @click="() => handleClickDownFile(record, 2)" type="link">下载</a>
+                  <a @click="() => handleClickDownFile(record, 2)" type="link">
+                    {{record.out_file_full_name}}
+                  </a>
                 </span>
               </div>
             </a-col>
@@ -101,21 +96,16 @@
             <a-col :span="8">
               <div>原始文档：
                 <a @click="() => handleClickDownFile(record, 0)" type="link">
-                  {{ record.file_name }}
+                  {{ record.file_name + record.file_ext }}
                 </a>
-              </div>
-            </a-col>
-            <a-col :span="8">
-              <div>文档内容：
-                <span v-if="record.state >= TranslateStatus.TransExtractSuccess">
-                  <a @click="() => handleClickDownFile(record, 1)" type="link">下载</a>
-                </span>
               </div>
             </a-col>
             <a-col :span="8">
               <div>翻译结果：
                 <span v-if="record.state >= TranslateStatus.TransTranslateSuccess">
-                  <a @click="() => handleClickDownFile(record, 2)" type="link">下载</a>
+                  <a @click="() => handleClickDownFile(record, 2)" type="link">
+                    {{record.out_file_full_name}}
+                  </a>
                 </span></div>
             </a-col>
           </a-row>
@@ -137,7 +127,7 @@
       </template>
 
       <template slot="file_name" slot-scope="text, record">
-        <a @click="() => handleClickDownFile(record)" type="link">{{ text }}</a>
+        <a @click="() => handleClickDownFile(record)" type="link">{{ record.file_name + record.file_ext }}</a>
       </template>
 
       <template slot="lang" slot-scope="text, record">
@@ -193,7 +183,7 @@
         </template>
       </a-pagination>
     </div>
-  </div>
+  </a-card>
 </template>
 
 
@@ -240,7 +230,7 @@ const columnsContent = [
 ]
 
 export default {
-  name: "historyAll",
+  name: "historyAdminSee",  //管理员可见的历史（全员）
   components: {PicPreview},
   props: ["tableHeight"],
   data() {
@@ -328,6 +318,7 @@ export default {
             let des_lang_cn = this.convert2ChineseLang(item.des_lang);
             return {
               ...item,
+              out_file_full_name: item.file_name + "." + des_lang_cn + item.out_file_ext,
               src_lang_cn,
               des_lang_cn,
             }
@@ -373,15 +364,14 @@ export default {
     async handleClickDownFile(item, type) {
       PostTransDownFile({id: item.id, type})
           .then((res) => {
-            let blob = new Blob([res.data]);
-            let url = window.URL.createObjectURL(blob);
+            let url = window.URL.createObjectURL(res.data);
             let aLink = document.createElement("a");
             aLink.style.display = "none";
             aLink.href = url;
             if (type === 0) {
-              aLink.setAttribute("download", item.file_name);
+              aLink.setAttribute("download", item.file_name + item.file_ext);
             } else {
-              aLink.setAttribute("download", item.file_name + item.out_file_ext);
+              aLink.setAttribute("download", item.out_file_full_name);
             }
             document.body.appendChild(aLink);
             aLink.click();

@@ -6,9 +6,6 @@
              :data-source="tableData"
              rowKey="id" style="margin-top: 20px;"
              size="small">
-      <template slot="file_name" slot-scope="text, record">
-        <a @click="() => handleClickDownFile(record)" type="link">{{ text }}</a>
-      </template>
 
       <template slot="lang" slot-scope="text, record">
         {{ record.src_lang_cn }} -> {{ record.des_lang_cn }}
@@ -60,7 +57,7 @@
 
 
 <script>
-import {GetRecordsByType, PostDeleteRecord, PostTransDownFile} from "../../services/translate";
+import {GetRecordsByType, PostDeleteRecord} from "../../services/translate";
 import TranslateStatus from "../../utils/translateStatus";
 
 const columnsContent = [
@@ -178,28 +175,6 @@ export default {
           .catch((err) => {
             this.$message.error(err.message);
             return;
-          })
-    },
-    async handleClickDownFile(item, type) {
-      PostTransDownFile({id: item.id, type})
-          .then((res) => {
-            let blob = new Blob([res.data]);
-            let url = window.URL.createObjectURL(blob);
-            let aLink = document.createElement("a");
-            aLink.style.display = "none";
-            aLink.href = url;
-            if (type === 0) {
-              aLink.setAttribute("download", item.file_name);
-            } else {
-              aLink.setAttribute("download", item.file_name + item.out_file_ext);
-            }
-            document.body.appendChild(aLink);
-            aLink.click();
-            document.body.removeChild(aLink); //下载完成移除元素
-            window.URL.revokeObjectURL(url); //释放掉blob对象
-          })
-          .catch((err) => {
-            this.$message.error(err.message);
           })
     },
   }

@@ -21,11 +21,11 @@
             <template slot="content">
               <pic-preview :id="record.id"/>
             </template>
-            <a @click="() => handleClickDownFile(record, 0)" type="link">{{ text }}</a>
+            <a @click="() => handleClickDownFile(record, 0)" type="link">{{ record.file_name + record.file_ext }}</a>
           </a-popover>
         </template>
         <template v-else>
-          <a @click="() => handleClickDownFile(record, 0)" type="link">{{ text }}</a>
+          <a @click="() => handleClickDownFile(record, 0)" type="link">{{ record.file_name + record.file_ext  }}</a>
         </template>
       </template>
 
@@ -91,7 +91,9 @@
 
       <template slot="file_trans" slot-scope="text, record">
         <div v-if="record.state >= TranslateStatus.TransTranslateSuccess">
-          <a @click="() => handleClickDownFile(record, 2)" type="link">下载</a>
+          <a @click="() => handleClickDownFile(record, 2)" type="link">
+            {{record.out_file_full_name}}
+          </a>
         </div>
       </template>
 
@@ -230,6 +232,7 @@ export default {
             let des_lang_cn = this.convert2ChineseLang(item.des_lang);
             return {
               ...item,
+              out_file_full_name: item.file_name + "." + des_lang_cn + item.out_file_ext,
               src_lang_cn,
               des_lang_cn,
             }
@@ -291,15 +294,14 @@ export default {
     async handleClickDownFile(item, type) {
       PostTransDownFile({id: item.id, type})
           .then((res) => {
-            let blob = new Blob([res.data]);
-            let url = window.URL.createObjectURL(blob);
+            let url = window.URL.createObjectURL(res.data);
             let aLink = document.createElement("a");
             aLink.style.display = "none";
             aLink.href = url;
             if (type === 0) {
-              aLink.setAttribute("download", item.file_name);
+              aLink.setAttribute("download", item.file_name + item.file_ext);
             } else {
-              aLink.setAttribute("download", item.file_name + item.out_file_ext);
+              aLink.setAttribute("download", item.out_file_full_name);
             }
             document.body.appendChild(aLink);
             aLink.click();

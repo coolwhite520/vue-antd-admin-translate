@@ -23,8 +23,7 @@ export default {
       return new Promise((resolve, reject) => {
         PostTransDownFile({id, type: 0})
             .then((res) => {
-              let blob = new Blob([res.data]);
-              let url = window.URL.createObjectURL(blob);
+              let url = window.URL.createObjectURL(res.data);
               this.base64Src = url
               resolve(url)
             })
