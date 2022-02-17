@@ -21,7 +21,7 @@ import HistoryFile from "./historyFile";
 
 const columnsImage = [
   {
-    title: '时间',
+    title: '创建时间',
     dataIndex: 'create_at',
     ellipsis: true,
     align: 'center',
@@ -35,13 +35,6 @@ const columnsImage = [
     ellipsis: true,
     align: 'center'
   },
-  // {
-  //   title: '识别内容',
-  //   dataIndex: 'file_content',
-  //   scopedSlots: {customRender: 'file_content'},
-  //   ellipsis: true,
-  //   align: 'center'
-  // },
   {
     title: '语言',
     dataIndex: 'lang',
@@ -51,16 +44,9 @@ const columnsImage = [
     align: 'center',
   },
   {
-    title: '翻译结果',
-    dataIndex: 'file_trans',
-    scopedSlots: {customRender: 'file_trans'},
-    align: 'center',
-    ellipsis: true,
-  },
-  {
     title: '翻译进度',
-    dataIndex: 'state_describe',
-    scopedSlots: {customRender: 'state_describe'},
+    dataIndex: 'progress',
+    scopedSlots: {customRender: 'progress'},
     align: 'center',
     ellipsis: true,
   },
@@ -69,7 +55,7 @@ const columnsImage = [
     dataIndex: 'operation',
     scopedSlots: {customRender: 'operation'},
     align: 'center',
-    width: 100,
+    width: 200,
     fixed: 'right',
   },
 ];
@@ -77,7 +63,7 @@ const columnsImage = [
 
 const columnsDocFile = [
   {
-    title: '时间',
+    title: '创建时间',
     dataIndex: 'create_at',
     ellipsis: true,
     align: 'center',
@@ -91,13 +77,7 @@ const columnsDocFile = [
     ellipsis: true,
     align: 'center'
   },
-  // {
-  //   title: '文档内容',
-  //   dataIndex: 'file_content',
-  //   scopedSlots: {customRender: 'file_content'},
-  //   ellipsis: true,
-  //   align: 'center'
-  // },
+
   {
     title: '语言',
     dataIndex: 'lang',
@@ -107,16 +87,9 @@ const columnsDocFile = [
     align: 'center',
   },
   {
-    title: '翻译结果',
-    dataIndex: 'file_trans',
-    scopedSlots: {customRender: 'file_trans'},
-    align: 'center',
-    ellipsis: true,
-  },
-  {
     title: '翻译进度',
-    dataIndex: 'state_describe',
-    scopedSlots: {customRender: 'state_describe'},
+    dataIndex: 'progress',
+    scopedSlots: {customRender: 'progress'},
     align: 'center',
     ellipsis: true,
   },
@@ -125,7 +98,7 @@ const columnsDocFile = [
     dataIndex: 'operation',
     scopedSlots: {customRender: 'operation'},
     align: 'center',
-    width: 100,
+    width: 200,
     fixed: 'right',
   },
 ];

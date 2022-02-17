@@ -8,7 +8,7 @@
         <a-icon type="sync" :spin="loading" @click="handleClickFresh"/>
       </a-tooltip>
     </div>
-    <a-table :scroll="{ x: 1200, y: tableHeight }"
+    <a-table :scroll="{ x: 1000, y: tableHeight }"
              :pagination="false"
              :columns="columns"
              :data-source="tableData"
@@ -25,22 +25,15 @@
           </a-popover>
         </template>
         <template v-else>
-          <a @click="() => handleClickDownFile(record, 0)" type="link">{{ record.file_name + record.file_ext  }}</a>
+          <a-tooltip :title="record.file_name + record.file_ext">
+            <a @click="() => handleClickDownFile(record, 0)" type="link">{{ record.file_name + record.file_ext  }}</a>
+          </a-tooltip>
         </template>
       </template>
 
       <template slot="file_content" slot-scope="text, record">
         <div v-if="record.state >= TranslateStatus.TransExtractSuccess">
           <a @click="() => handleClickDownFile(record, 1)" type="link">下载</a>
-        </div>
-      </template>
-
-      <template slot="trans_type" slot-scope="text">
-        <div v-if="text === 1">
-          <i>图片</i>
-        </div>
-        <div v-if="text === 2">
-          <b>文档</b>
         </div>
       </template>
 
@@ -73,41 +66,26 @@
         </div>
       </template>
 
-      <template slot="state_describe" slot-scope="text, record">
-        <div
-            v-if="record.state === TranslateStatus.TransTranslateSuccess || record.state === TranslateStatus.TransExtractSuccessContentEmpty"
-            style="color: #52c41a;">
-          {{ text }}
-        </div>
-        <div
-            v-else-if="record.state === TranslateStatus.TransTranslateFailed || record.state === TranslateStatus.TransExtractFailed"
-            style="color: #f5222f;">
-          {{ text }}
-        </div>
-        <div v-else style="color: #faad14;">
-          {{ text }}
-        </div>
-      </template>
-
-      <template slot="file_trans" slot-scope="text, record">
-        <div v-if="record.state >= TranslateStatus.TransTranslateSuccess">
-          <a @click="() => handleClickDownFile(record, 2)" type="link">
-            {{record.out_file_full_name}}
-          </a>
-        </div>
+      <template slot="progress" slot-scope="text, record">
+        <a-progress
+            :stroke-color="{
+        '0%': '#108ee9',
+        '100%': '#87d068',
+      }"
+            :percent="record.progress"
+        />
       </template>
 
       <template slot="operation" slot-scope="text, record">
         <div style="text-align: center">
           <template v-if="record.state === TranslateStatus.TransNoRun">
-            <a-tooltip title="翻译">
+            <a-tooltip title="启动翻译">
               <a @click="() => handleClickTranslate(record)" style="margin-right: 20px;">
-                <a-icon type="cloud"/>
+                <a-icon type="cloud-upload" />
               </a>
             </a-tooltip>
           </template>
-          <template
-              v-if="record.state === TranslateStatus.TransExtractFailed || record.state === TranslateStatus.TransTranslateFailed">
+          <template v-else-if="record.state === TranslateStatus.TransTranslateFailed">
             <a-tooltip title="再次尝试翻译">
               <a @click="() => handleClickTranslate(record)" style="margin-right: 20px;">
                 <a-icon type="redo"/>
@@ -120,6 +98,13 @@
               <a-icon type="search" style="color: #f5222f;margin-right: 20px;"/>
             </a-popover>
           </template>
+          <span v-else-if="record.state >= TranslateStatus.TransTranslateSuccess">
+             <a-tooltip title="下载翻译结果">
+              <a @click="() => handleClickDownFile(record, 2)" style="margin-right: 20px;">
+                <a-icon type="download"/>
+              </a>
+             </a-tooltip>
+          </span>
           <a-tooltip title="删除此条记录">
             <a @click="() => handleClickDelete(record)">
               <a-icon type="delete"/>

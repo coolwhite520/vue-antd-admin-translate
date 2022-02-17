@@ -53,19 +53,12 @@
 
 const columnsAllFile = [
   {
-    title: '时间',
+    title: '创建时间',
     dataIndex: 'create_at',
     ellipsis: true,
     align: 'center',
     width: 200,
     fixed: 'left'
-  },
-  {
-    title: '文件类型',
-    dataIndex: 'trans_type',
-    scopedSlots: {customRender: 'trans_type'},
-    ellipsis: true,
-    align: 'center'
   },
   {
     title: '原始文件',
@@ -74,14 +67,6 @@ const columnsAllFile = [
     ellipsis: true,
     align: 'center'
   },
-
-  // {
-  //   title: '识别内容',
-  //   dataIndex: 'file_content',
-  //   scopedSlots: {customRender: 'file_content'},
-  //   ellipsis: true,
-  //   align: 'center'
-  // },
   {
     title: '语言',
     dataIndex: 'lang',
@@ -91,54 +76,19 @@ const columnsAllFile = [
     align: 'center',
   },
   {
-    title: '翻译结果',
-    dataIndex: 'file_trans',
-    scopedSlots: {customRender: 'file_trans'},
-    align: 'center',
-    ellipsis: true,
-  },
-  {
     title: '翻译进度',
-    dataIndex: 'state_describe',
-    scopedSlots: {customRender: 'state_describe'},
-    align: 'center',
+    dataIndex: 'progress',
+    scopedSlots: {customRender: 'progress'},
     ellipsis: true,
+    align: 'center',
   },
   {
     title: '操作',
     dataIndex: 'operation',
     scopedSlots: {customRender: 'operation'},
     align: 'center',
-    width: 100,
+    width: 200,
     fixed: 'right',
-  },
-];
-
-
-const columns = [
-  {
-    title: '文件名',
-    dataIndex: 'file_name',
-    scopedSlots: {customRender: 'file_name'},
-    align: 'center'
-  },
-  {
-    title: '源语言',
-    dataIndex: 'src_lang',
-    scopedSlots: {customRender: 'src_lang'},
-    align: 'center'
-  },
-  {
-    title: '目标语言',
-    dataIndex: 'des_lang',
-    scopedSlots: {customRender: 'des_lang'},
-    align: 'center'
-  },
-  {
-    title: '操作',
-    dataIndex: 'operation',
-    scopedSlots: {customRender: 'operation'},
-    align: 'center'
   },
 ];
 
@@ -152,7 +102,6 @@ export default {
   props: ["langList"],
   data() {
     return {
-      columns,
       columnsAllFile,
       fileList: [],
       uploading: false,
@@ -239,7 +188,7 @@ export default {
             this.$notification.success(
                 {
                   message: '翻译任务成功添加',
-                  description: '可在【历史记录】中查看翻译进度',
+                  description: '可在【历史记录】中查看翻译状态',
                 }
             )
             const index = this.tableData.indexOf(item);
