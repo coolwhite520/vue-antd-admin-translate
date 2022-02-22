@@ -64,7 +64,7 @@
                 <p class="ant-upload-drag-icon">
                   <a-icon type="file-text"/>
                 </p>
-                <p class="ant-upload-text">
+                <p class="ant-upload-text" style="color:  #555454">
                   点击或拖拽到此区域
                 </p>
                 <p class="ant-upload-hint">

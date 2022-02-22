@@ -15,15 +15,18 @@
             <p class="ant-upload-drag-icon">
               <a-icon type="file-text"/>
             </p>
-            <p class="ant-upload-text">
+            <p class="ant-upload-text" style="color: #555454">
               点击或拖拽到此区域
             </p>
             <p class="ant-upload-hint">
-              文档支持格式：.txt、.doc、.docx、.odf、.pdf、.ppt、.pptx、.ps、.rtf、.xls、.xlsx 等
+              文档支持格式：.txt .doc .docx .ppt .pptx .xls .xlsx .pdf .eml等
             </p>
             <p class="ant-upload-hint">
-              图片支持格式：.png、.bmp、.jpg、.jpeg、.gif 等
+              图片支持格式：.png .bmp .jpg .jpeg .gif 等
             </p>
+<!--            <p class="ant-upload-hint" style="color: #73bf66">-->
+<!--              注：.docx .xlsx .pptx .eml 可以保留原始格式。-->
+<!--            </p>-->
           </a-col>
         </a-row>
       </a-upload-dragger>
@@ -42,7 +45,7 @@
     </a-card>
 
     <a-card style="margin-top: 20px;">
-      <history-file :langList="langList" :hisType="3" :columns="columnsAllFile" :tableHeight="200" ref="historyChild"/>
+      <history-file :langList="langList" :hisType="3" :columns="columnsAllFile" :tableHeight="300" ref="historyChild"/>
     </a-card>
   </div>
 </template>

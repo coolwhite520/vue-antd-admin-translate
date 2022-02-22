@@ -26,7 +26,7 @@
         </template>
         <template v-else>
           <a-tooltip :title="record.file_name + record.file_ext">
-            <a @click="() => handleClickDownFile(record, 0)" type="link">{{ record.file_name + record.file_ext  }}</a>
+            <a @click="() => handleClickDownFile(record, 0)" type="link">{{ record.file_name + record.file_ext }}</a>
           </a-tooltip>
         </template>
       </template>
@@ -81,7 +81,7 @@
           <template v-if="record.state === TranslateStatus.TransNoRun">
             <a-tooltip title="启动翻译">
               <a @click="() => handleClickTranslate(record)" style="margin-right: 20px;">
-                <a-icon type="cloud-upload" />
+                <a-icon type="cloud-upload"/>
               </a>
             </a-tooltip>
           </template>
@@ -91,20 +91,19 @@
                 <a-icon type="redo"/>
               </a>
             </a-tooltip>
-            <a-popover title="失败信息">
-              <template slot="content">
-                <p>{{ record.error }}</p>
-              </template>
-              <a-icon type="search" style="color: #f5222f;margin-right: 20px;"/>
-            </a-popover>
+            <a-tooltip title="查看错误信息">
+              <a @click="() => handleClickDownErrFile(record.error)" style="margin-right: 20px;">
+                <a-icon type="search"/>
+              </a>
+            </a-tooltip>
           </template>
-          <span v-else-if="record.state >= TranslateStatus.TransTranslateSuccess">
+          <template v-else-if="record.state >= TranslateStatus.TransTranslateSuccess">
              <a-tooltip title="下载翻译结果">
               <a @click="() => handleClickDownFile(record, 2)" style="margin-right: 20px;">
                 <a-icon type="download"/>
               </a>
              </a-tooltip>
-          </span>
+          </template>
           <a-tooltip title="删除此条记录">
             <a @click="() => handleClickDelete(record)">
               <a-icon type="delete"/>
@@ -174,10 +173,29 @@ export default {
   created() {
     this.fetchTableData()
   },
+  destroyed() {
+    if (this.loop) clearInterval(this.loop)
+  },
   methods: {
+    findItemById(id, list) {
+      for (let item of list) {
+        if (item.id === id) {
+          return item
+        }
+      }
+      return null
+    },
+    deleteItemById(id, list) {
+      for(let i = list.length - 1; i>=0; i--) {
+        let item = list[i];
+        if (item.id === id) {
+          list.splice(i, 1)
+        }
+      }
+    },
     convert2ChineseLang(en_name) {
       for (let item of this.langList) {
-        if(item.en_name === en_name) {
+        if (item.en_name === en_name) {
           return item.cn_name;
         }
       }
@@ -196,8 +214,7 @@ export default {
     },
     isOverState(state) {
       if (state === TranslateStatus.TransTranslateSuccess ||
-          state === TranslateStatus.TransTranslateFailed ||
-          state === TranslateStatus.TransExtractFailed) {
+          state === TranslateStatus.TransTranslateFailed ){
         return true
       }
       return false
@@ -212,7 +229,7 @@ export default {
         }
         let {list, total} = res.data.data
         if (list !== null) {
-          this.tableData = list.map((item) => {
+          list = list.map((item) => {
             let src_lang_cn = this.convert2ChineseLang(item.src_lang);
             let des_lang_cn = this.convert2ChineseLang(item.des_lang);
             return {
@@ -233,6 +250,14 @@ export default {
             }
             if (isAllOver) this.autoFresh = false
           }
+
+          for (let item of list) {
+            let obj = this.findItemById(item.id, this.tableData)
+            if (obj === null) continue
+            item.src_lang = obj.src_lang
+            item.des_lang = obj.des_lang
+          }
+          this.tableData = list
         } else {
           this.tableData = []
         }
@@ -275,7 +300,9 @@ export default {
           })
 
     },
-
+    handleClickDownErrFile(errorMsg) {
+      this.$message.info(errorMsg);
+    },
     async handleClickDownFile(item, type) {
       PostTransDownFile({id: item.id, type})
           .then((res) => {

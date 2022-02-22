@@ -133,20 +133,15 @@
       <template slot="lang" slot-scope="text, record">
         {{ record.src_lang_cn }} -> {{ record.des_lang_cn }}
       </template>
-      <template slot="state_describe" slot-scope="text, record">
-        <div
-            v-if="record.state === TranslateStatus.TransTranslateSuccess || record.state === TranslateStatus.TransExtractSuccessContentEmpty"
-            style="color: #52c41a;">
-          {{ text }}
-        </div>
-        <div
-            v-else-if="record.state === TranslateStatus.TransTranslateFailed || record.state === TranslateStatus.TransExtractFailed"
-            style="color: #f5222f;">
-          {{ text }}
-        </div>
-        <div v-else style="color: #faad14;">
-          {{ text }}
-        </div>
+
+      <template slot="progress" slot-scope="text, record">
+        <a-progress
+            :stroke-color="{
+        '0%': '#108ee9',
+        '100%': '#87d068',
+      }"
+            :percent="record.progress"
+        />
       </template>
 
       <template slot="operation" slot-scope="text, record">
@@ -215,9 +210,9 @@ const columnsContent = [
     align: 'center'
   },
   {
-    title: '翻译状态',
-    dataIndex: 'state_describe',
-    scopedSlots: {customRender: 'state_describe'},
+    title: '翻译进度',
+    dataIndex: 'progress',
+    scopedSlots: {customRender: 'progress'},
     ellipsis: true,
     align: 'center'
   },
