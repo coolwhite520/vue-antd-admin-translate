@@ -6,7 +6,7 @@
           <a-icon type="redo"/>&nbsp;系统组件修复
         </div>
         <div style="text-align: center">
-          <a-button type="primary" style="width: 50%" @click="handleClickRepair">立即修复</a-button>
+          <a-button type="primary" style="width: 40%" @click="handleClickRepair">自动修复</a-button>
         </div>
       </a-card>
       <a-card style="margin-top: 20px;">

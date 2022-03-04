@@ -26,6 +26,7 @@ module.exports = {
   GetComponentsApi: `${BASE_URL}/admin/components`,
   PostUpgradeApi: `${BASE_URL}/admin/upgrade`,
   GetAllTransRecordsApi: `${BASE_URL}/admin/all_records`,
+  GetSysInfoUrl: `${BASE_URL}/admin/sysinfo`,
 
 
   IpTableUrl: `${BASE_URL}/admin/ip_table`,

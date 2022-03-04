@@ -8,6 +8,7 @@ import {
     PostUpgradeApi,
     PostModifyUserMarkApi,
     IpTableTypeUrl,
+    GetSysInfoUrl,
     IpTableUrl,
     GetAllTransRecordsApi
 } from '@/services/api'
@@ -73,6 +74,10 @@ export async function SwitchTableType(value) {
 
 export async function GetTableType() {
     return request(IpTableTypeUrl, METHOD.GET)
+}
+
+export async function GetSysInfo() {
+    return request(GetSysInfoUrl, METHOD.GET)
 }
 
 export async function DeleteIpTableRecordById(id) {

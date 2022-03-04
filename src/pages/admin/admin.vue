@@ -21,6 +21,9 @@
           <a-tab-pane key="4" tab="系统维护">
             <system-manage v-if="activeKey === '4'"/>
           </a-tab-pane>
+          <a-tab-pane key="5" tab="系统信息">
+            <about v-if="activeKey === '5'"/>
+          </a-tab-pane>
         </a-tabs>
       </a-col>
       <a-col :xs="0" :sm="0" :md="3" :lg="3" :xl="3">
@@ -37,6 +40,7 @@ import SystemManage from "./system";
 import AccessManager from "./access";
 import UserHistory from "./userHistory";
 import HistoryAdminSee from "../history/historyAdminSee"
+import About from "./about";
 export default {
   name: "admin",
   data() {
@@ -49,7 +53,7 @@ export default {
       this.activeKey = val
     }
   },
-  components: {UserHistory, AccessManager, SystemManage, UserManage, HistoryAdminSee},
+  components: {About, UserHistory, AccessManager, SystemManage, UserManage, HistoryAdminSee},
 }
 </script>
 
