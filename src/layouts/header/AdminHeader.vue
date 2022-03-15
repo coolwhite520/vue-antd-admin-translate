@@ -61,7 +61,10 @@ export default {
   },
   methods: {
     handleClickLogo() {
-      console.log(this.$route)
+      if (this.$route.path === "/systemAvailable") {
+        this.$message.warning("当前正在进行系统初始化，请稍后。")
+        return
+      }
       if (this.user.pwdValidator.length > 0) {
         this.$message.warning("当前密码为弱口令，请先进行密码修改！")
         return

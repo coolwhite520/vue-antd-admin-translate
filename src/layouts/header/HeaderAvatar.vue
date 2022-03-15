@@ -42,6 +42,10 @@ export default {
       this.$router.push('/login')
     },
     handleClickAdmin() {
+      if (this.$route.path === "/systemAvailable") {
+        this.$message.warning("当前正在进行系统初始化，请稍后。")
+        return
+      }
       if (this.$route.path === "/admin") {
         this.$router.go(0)
       } else {
@@ -49,6 +53,10 @@ export default {
       }
     },
     handleClickJumpHome() {
+      if (this.$route.path === "/systemAvailable") {
+        this.$message.warning("当前正在进行系统初始化，请稍后。")
+        return
+      }
       if (this.$route.path === "/translate") {
         this.$router.go(0)
       } else {
@@ -56,6 +64,10 @@ export default {
       }
     },
     handleClickSelfCenter() {
+      if (this.$route.path === "/systemAvailable") {
+        this.$message.warning("当前正在进行系统初始化，请稍后。")
+        return
+      }
       if (this.$route.path === "/self") {
         this.$router.go(0)
       } else {

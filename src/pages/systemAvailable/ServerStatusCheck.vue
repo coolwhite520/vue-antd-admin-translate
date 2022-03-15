@@ -58,7 +58,7 @@ export default {
       }).catch((err) => {
         this.$message.error(err.message)
       })
-    }, 1000)
+    }, 5000)
   },
 
 }
