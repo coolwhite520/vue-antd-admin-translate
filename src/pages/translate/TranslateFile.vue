@@ -231,34 +231,7 @@ export default {
             return;
           })
     },
-    handleChangeSrcLang(lang, obj) {
-      obj.src_lang = lang
-      if (obj.des_lang === "") {
-        obj.des_lang = lang
-      }
-      if (obj.des_lang === obj.src_lang) {
-        for (let item of this.langList) {
-          if (item.en_name !== obj.des_lang) {
-            obj.des_lang = item.en_name
-            break;
-          }
-        }
-      }
-    },
-    handleChangeDesLang(lang, obj) {
-      obj.des_lang = lang;
-      if (obj.src_lang === "") {
-        obj.src_lang = lang
-      }
-      if (obj.des_lang === obj.src_lang) {
-        for (let item of this.langList) {
-          if (item.en_name !== obj.src_lang) {
-            obj.src_lang = item.en_name
-            break;
-          }
-        }
-      }
-    }
+
   }
 }
 </script>

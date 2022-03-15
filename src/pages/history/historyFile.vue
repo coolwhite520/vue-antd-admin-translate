@@ -31,12 +31,6 @@
         </template>
       </template>
 
-      <template slot="file_content" slot-scope="text, record">
-        <div v-if="record.state >= TranslateStatus.TransExtractSuccess">
-          <a @click="() => handleClickDownFile(record, 1)" type="link">下载</a>
-        </div>
-      </template>
-
       <template slot="lang" slot-scope="text, record">
         <div v-if="record.state !== TranslateStatus.TransNoRun">
           {{ record.src_lang_cn }} -> {{ record.des_lang_cn }}
@@ -80,34 +74,34 @@
         <div style="text-align: center">
           <template v-if="record.state === TranslateStatus.TransNoRun">
             <a-tooltip title="启动翻译">
-              <a @click="() => handleClickTranslate(record)" style="margin-right: 20px;">
-                <a-icon type="cloud-upload"/>
-              </a>
+              <a-button @click="() => handleClickTranslate(record)" style="margin-right: 20px;" type="primary" size="small">
+                <a-icon type="play-circle" />
+              </a-button>
             </a-tooltip>
           </template>
           <template v-else-if="record.state === TranslateStatus.TransTranslateFailed">
             <a-tooltip title="再次尝试翻译">
-              <a @click="() => handleClickTranslate(record)" style="margin-right: 20px;">
+              <a-button @click="() => handleClickTranslate(record)" style="margin-right: 20px;" type="primary" size="small">
                 <a-icon type="redo"/>
-              </a>
+              </a-button>
             </a-tooltip>
             <a-tooltip title="查看错误信息">
-              <a @click="() => handleClickDownErrFile(record.error)" style="margin-right: 20px;">
+              <a-button @click="() => handleClickDownErrFile(record.error)" style="margin-right: 20px;" type="primary" size="small">
                 <a-icon type="search"/>
-              </a>
+              </a-button>
             </a-tooltip>
           </template>
           <template v-else-if="record.state >= TranslateStatus.TransTranslateSuccess">
              <a-tooltip title="下载翻译结果">
-              <a @click="() => handleClickDownFile(record, 2)" style="margin-right: 20px;">
+              <a-button @click="() => handleClickDownFile(record, 2)" style="margin-right: 20px;" type="primary" size="small">
                 <a-icon type="download"/>
-              </a>
+              </a-button>
              </a-tooltip>
           </template>
           <a-tooltip title="删除此条记录">
-            <a @click="() => handleClickDelete(record)">
+            <a-button @click="() => handleClickDelete(record)" type="danger" size="small">
               <a-icon type="delete"/>
-            </a>
+            </a-button>
           </a-tooltip>
 
         </div>
@@ -329,28 +323,28 @@ export default {
       if (obj.des_lang === "") {
         obj.des_lang = lang
       }
-      if (obj.des_lang === obj.src_lang) {
-        for (let item of this.langList) {
-          if (item.en_name !== obj.des_lang) {
-            obj.des_lang = item.en_name
-            break;
-          }
-        }
-      }
+      // if (obj.des_lang === obj.src_lang) {
+      //   for (let item of this.langList) {
+      //     if (item.en_name !== obj.des_lang) {
+      //       obj.des_lang = item.en_name
+      //       break;
+      //     }
+      //   }
+      // }
     },
     handleChangeDesLang(lang, obj) {
       obj.des_lang = lang;
       if (obj.src_lang === "") {
         obj.src_lang = lang
       }
-      if (obj.des_lang === obj.src_lang) {
-        for (let item of this.langList) {
-          if (item.en_name !== obj.src_lang) {
-            obj.src_lang = item.en_name
-            break;
-          }
-        }
-      }
+      // if (obj.des_lang === obj.src_lang) {
+      //   for (let item of this.langList) {
+      //     if (item.en_name !== obj.src_lang) {
+      //       obj.src_lang = item.en_name
+      //       break;
+      //     }
+      //   }
+      // }
     },
     handleClickTranslate(item) {
       if (item.src_lang === "") {
@@ -366,8 +360,6 @@ export default {
         des_lang: item.des_lang,
         record_id: item.id,
       }
-      item.state = TranslateStatus.TransBeginExtract
-      item.state_describe = "正在抽取文件内容"
       this.autoFresh = true
       this.isManualClickAutoFresh = false
       PostTransFile(obj)
