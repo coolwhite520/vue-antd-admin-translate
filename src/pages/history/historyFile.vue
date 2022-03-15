@@ -360,6 +360,7 @@ export default {
         des_lang: item.des_lang,
         record_id: item.id,
       }
+      item.state = TranslateStatus.TransBeginTranslate
       this.autoFresh = true
       this.isManualClickAutoFresh = false
       PostTransFile(obj)
