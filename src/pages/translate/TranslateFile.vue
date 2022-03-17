@@ -99,6 +99,8 @@ const columnsAllFile = [
 import {PostDeleteRecord, PostTransFile, PostTransUpload} from "../../services/translate";
 import HistoryFile from "../history/historyFile";
 
+const FileMaxLen = 30; //MB
+
 export default {
   name: "TranslateFile",
   components: {HistoryFile},
@@ -143,8 +145,8 @@ export default {
         this.$message.warning(`${file.name} 为空文件，无法上传！`)
         return false
       }
-      if (file.size > 1024 * 1024 * 5) {
-        this.$message.warning(`${file.name} 大于5Mb，请上传小于5Mb的文件！`)
+      if (file.size > FileMaxLen * 1024 * 1024) {
+        this.$message.warning(`${file.name} 大于 ${FileMaxLen}Mb，请上传小于${FileMaxLen}Mb的文件！`)
         return false
       }
       this.fileList = [...this.fileList, file];
