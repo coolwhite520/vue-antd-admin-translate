@@ -22,7 +22,8 @@
 
           <template slot="versions" slot-scope="text, record">
             <div v-if="record.versions && record.versions.length > 0">
-              <a-select v-model="record.up_version" @change="(value) => { handleChangeVersion(value, record) }" style="width: 80px;">
+              <a-select v-model="record.up_version" @change="(value) => { handleChangeVersion(value, record) }"
+                        style="width: 80px;">
                 <a-select-option v-for="item in record.versions" :key="item">
                   {{ item }}
                 </a-select-option>
@@ -140,7 +141,7 @@ const columnsComponents = [
     align: 'center'
   },
 ]
-import {logout} from '@/services/user'
+// import {logout} from '@/services/user'
 
 export default {
   name: "SystemManage",
@@ -225,32 +226,37 @@ export default {
     },
 
     handleClickUpgrade(item) {
+
       this.loading = true
       if (item.up_version > item.current_version) {
         this.pageLoadingTip = `正在进行${item.name}组件的升级，请稍后...`
       } else {
         this.pageLoadingTip = `正在进行${item.name}组件的恢复，请稍后...`
       }
-      setTimeout(() => {
-        if (item.name === 'web') {
-          logout(this.currUser.user_id)
-        }
-      }, 2000)
       PostUpgrade(item)
           .then((res) => {
-            if (res.data.code !== 200) {
-              this.$message.warning(res.data.msg)
+            if (item.name === 'web') {
+              setTimeout(() => {
+                this.$router.push("/login")
+                this.$router.go(0)
+              }, 5000)
+            } else {
+              if (res.data.code !== 200) {
+                this.$message.warning(res.data.msg)
+                this.loading = false
+                return;
+              }
               this.loading = false
-              return;
+              this.$message.success(res.data.msg);
+              this.fetchComponents()
             }
-            this.loading = false
-            this.$message.success(res.data.msg);
-            this.fetchComponents()
           })
-          .catch((err) => {
-            this.$message.warning(err.message)
+          .catch(() => {
             this.loading = false
-            return;
+            setTimeout(() => {
+              this.$router.push("/login")
+              this.$router.go(0)
+            }, 2000)
           })
     },
     async upload(formData) {
@@ -270,7 +276,7 @@ export default {
             })
       })
     },
-    async sliceUploadFile(file, ) {
+    async sliceUploadFile(file,) {
       let totalSize = file.size; // 文件总大小
       let chunkSize = Math.ceil(file.size / 100);
       let start = 0; // 每次上传的开始字节

@@ -24,7 +24,7 @@ const resp401 = {
     onRejected(error, options) {
         const {message} = options
         const {response} = error
-        if (response.status === 401) {
+        if (response && response.status === 401) {
             message.error('无此权限')
         }
         return Promise.reject(error)
@@ -42,7 +42,7 @@ const resp403 = {
     onRejected(error, options) {
         const {message} = options
         const {response} = error
-        if (response.status === 403) {
+        if (response && response.status === 403) {
             message.error('请求被拒绝')
         }
         return Promise.reject(error)
