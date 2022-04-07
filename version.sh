@@ -1,2 +1,2 @@
-#!/bin/bash
-version="3.3.7"
+#!/bin/bash 
+version="${versionNew}"
