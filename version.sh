@@ -1,2 +1,2 @@
-#!/bin/bash 
-version=3.3.8
+#!/bin/bash
+version="3.3.8"
