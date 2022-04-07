@@ -49,7 +49,7 @@ inquirer
             );
             let version_str = `#!/bin/bash \r\nversion=${versionNew}`
             command(
-                `echo ${version_str} > version.sh`
+                `echo ${version_str} > ./version.sh`
             )
             command(
               `git add package.json && git commit -m 'ci(package.json): 更新项目版本号为：${versionNew}'`
