@@ -3,6 +3,11 @@
     <a-spin :tip="pageLoadingTip" :spinning="loading">
 
       <a-card>
+        <a slot="extra" href="#">
+          <a-tooltip title="可导出系统运行日志">
+            <a-button type="link" @click="handleClickRepair"><a-icon type="download" />导出系统日志</a-button>
+          </a-tooltip>
+        </a>
         <div slot="title">
           <a-icon type="dashboard" />&nbsp;系统仪表盘
         </div>
@@ -21,10 +26,12 @@
 
       <a-card style="margin-top: 20px;">
         <div slot="title">
-          <a-icon type="cloud-upload"/>&nbsp;系统组件升级
+          <a-icon type="cloud-upload"/>&nbsp;系统组件维护
         </div>
         <a slot="extra" href="#">
-          <a-button type="primary" @click="handleClickRepair"><a-icon type="tool" />组件自动修复</a-button>
+          <a-tooltip title="可自动修复运行状态不佳的组件">
+            <a-button type="link" @click="handleClickRepair"><a-icon type="tool" />组件自动修复</a-button>
+          </a-tooltip>
         </a>
         <a-table :scroll="{ y: 800 }"
                  :pagination="false"
@@ -74,10 +81,9 @@
                   </a-button>
                 </a-tooltip>
               </a-popconfirm>
-              &nbsp;
-              <a-tooltip title="查看组件日志">
-                <a-button size="small" type="primary" @click="handleClickLogsContainer(record)">
-                  <a-icon type="question"/>
+              <a-tooltip title="导出组件日志">
+                <a-button style="margin-left: 20px" size="small" @click="handleClickLogsContainer(record)">
+                  <a-icon type="download" />
                 </a-button>
               </a-tooltip>
             </div>

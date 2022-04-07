@@ -11,7 +11,7 @@
         <span>个人中心</span>
       </a-menu-item>
       <a-menu-item v-if="user.isSuper" @click="handleClickAdmin" :disabled="user.pwdValidator.length > 0">
-        <a-icon type="setting" />
+        <a-icon type="appstore" />
         <span>系统管理</span>
       </a-menu-item>
       <a-menu-item @click="handleClickJumpHome" :disabled="user.pwdValidator.length > 0">

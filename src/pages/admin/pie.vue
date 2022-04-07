@@ -46,7 +46,7 @@ export default {
             type: 'pie',
             radius: '50%',
             data: [
-              { value: this.percent, name: this.title + this.percent + "%" },
+              { value: this.percent, name: "占用" + this.percent + "%" },
               { value: 100 - this.percent, name: "空闲" + (100 - this.percent) + "%" },
             ],
             emphasis: {
