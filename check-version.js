@@ -48,8 +48,15 @@ inquirer
               )
             );
             command(
+                `echo 
+                '#!/bin/bash
+                 version="${versionNew}"' > ./version.sh
+                 `
+            )
+            command(
               `git add package.json && git commit -m 'ci(package.json): 更新项目版本号为：${versionNew}'`
             );
+
             console.log(`\n`);
             process.exit(0);
           } else {

@@ -1,6 +1,6 @@
 #!/bin/sh
+source ./version.sh
 yarn build
-#read -p "Enter Version:" version
-docker build -t web:3.3.7 .
-docker save -o web.tar web:3.3.7
-docker rmi web:3.3.7
+docker build -t web:$version .
+docker save -o web.tar web:$version
+#docker rmi web:$version
