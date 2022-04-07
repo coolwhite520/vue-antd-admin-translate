@@ -4,13 +4,15 @@ import {
     PostAddUserApi,
     PostModifyUserPwdApi,
     GetComponentsApi,
+    GetSystemCpuMemDiskDetailApi,
     DeleteUserApi,
     PostUpgradeApi,
     PostModifyUserMarkApi,
     IpTableTypeUrl,
     GetSysInfoUrl,
     IpTableUrl,
-    GetAllTransRecordsApi
+    GetAllTransRecordsApi,
+    PostDownContainerLogsApi
 } from '@/services/api'
 
 import {request, METHOD,} from '@/utils/request'
@@ -25,6 +27,14 @@ export async function GetAllTransRecords(offset, count) {
 
 export async function GetComponents() {
     return request(GetComponentsApi, METHOD.GET)
+}
+
+export async function GetSystemCpuMemDiskDetail() {
+    return request(GetSystemCpuMemDiskDetailApi, METHOD.GET)
+}
+
+export async function PostDownContainerLogs(containerName) {
+    return request(PostDownContainerLogsApi, METHOD.POST, {name: containerName}, {responseType: 'blob'})
 }
 
 export async function PostAddUser(obj) {

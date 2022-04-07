@@ -64,7 +64,8 @@ export default {
           this.sn = sn
           this.created_at = moment(created_at * 1000).format("YYYY-MM-DD")
           this.user_name = user_name
-          this.use_time_span = moment.duration(parseInt(use_time_span), "seconds").asMonths().toFixed() + "个月"
+          let month = moment.duration(parseInt(use_time_span), "seconds").asMonths().toFixed()
+          this.use_time_span = month > 240 ? `永久`: `${month} 个月`
           this.support_lang_str = support_lang_list.map((item) => item.cn_name).join("，")
         })
   },

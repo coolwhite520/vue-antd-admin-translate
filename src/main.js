@@ -6,6 +6,10 @@ import Antd from 'ant-design-vue'
 import Viser from 'viser-vue'
 import QRCode from 'qrcode'
 import {pinyin} from 'pinyin-pro';
+
+import * as echarts from 'echarts'
+Vue.prototype.$echarts = echarts
+
 // import '@/mock'
 import store from './store'
 import 'animate.css/source/animate.css'
@@ -22,6 +26,7 @@ Vue.use(Antd)
 Vue.config.productionTip = false
 Vue.use(Viser)
 Vue.use(Plugins)
+
 
 Vue.prototype.$copy =(content)=>{
   if (window.clipboardData) {

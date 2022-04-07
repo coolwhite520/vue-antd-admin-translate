@@ -1,25 +1,53 @@
 <template>
   <div>
     <a-spin :tip="pageLoadingTip" :spinning="loading">
+
       <a-card>
         <div slot="title">
-          <a-icon type="redo"/>&nbsp;系统组件修复
+          <a-icon type="dashboard" />&nbsp;系统仪表盘
         </div>
-        <div style="text-align: center">
-          <a-button type="primary" style="width: 40%" @click="handleClickRepair">自动修复</a-button>
-        </div>
+        <a-row v-if="this.cpuMemDisk">
+          <a-col :span="8">
+            <pie title="cpu占用率" :percent="parseInt(this.cpuMemDisk.cpu_percent)"/>
+          </a-col>
+          <a-col :span="8">
+            <pie title="内存占用率" :percent="parseInt(this.cpuMemDisk.mem_percent)"/>
+          </a-col>
+          <a-col :span="8">
+            <pie title="磁盘占用率" :percent="parseInt(this.cpuMemDisk.disk_percent)"/>
+          </a-col>
+        </a-row>
       </a-card>
+
       <a-card style="margin-top: 20px;">
         <div slot="title">
-          <a-icon type="arrow-up"/>&nbsp;系统组件升级
+          <a-icon type="cloud-upload"/>&nbsp;系统组件升级
         </div>
+        <a slot="extra" href="#">
+          <a-button type="primary" @click="handleClickRepair"><a-icon type="tool" />组件自动修复</a-button>
+        </a>
         <a-table :scroll="{ y: 800 }"
                  :pagination="false"
                  :columns="columnsComponents"
                  :data-source="tableData"
-                 rowKey="name" style="margin-top: 20px;"
-                 size="small">
-
+                 rowKey="name"
+                 style="margin-top: 20px;"
+                 size="small"
+        >
+          <template slot="comps_state_describe" slot-scope="text,record">
+            <div v-if="record.comps_state === 0">
+              <a-icon type="sync" spin/>
+              {{ text }}
+            </div>
+            <div v-else-if="record.comps_state === 1">
+              <a-icon type="stop"/>
+              {{ text }}
+            </div>
+            <div v-else>
+              <a-icon type="disconnect"/>
+              {{ text }}
+            </div>
+          </template>
           <template slot="versions" slot-scope="text, record">
             <div v-if="record.versions && record.versions.length > 0">
               <a-select v-model="record.up_version" @change="(value) => { handleChangeVersion(value, record) }"
@@ -40,10 +68,18 @@
                   @confirm="handleClickUpgrade(record)"
                   @cancel="cancel"
               >
-                <a-button :disabled="record.up_version === ''" size="small" type="primary">
-                  <a-icon :type="record.up_version > record.current_version ? 'cloud-upload':'redo'"/>
-                </a-button>
+                <a-tooltip title="升级或恢复操作">
+                  <a-button :disabled="record.up_version === ''" size="small" type="primary">
+                    <a-icon :type="record.up_version > record.current_version ? 'cloud-upload':'redo'"/>
+                  </a-button>
+                </a-tooltip>
               </a-popconfirm>
+              &nbsp;
+              <a-tooltip title="查看组件日志">
+                <a-button size="small" type="primary" @click="handleClickLogsContainer(record)">
+                  <a-icon type="question"/>
+                </a-button>
+              </a-tooltip>
             </div>
           </template>
         </a-table>
@@ -109,8 +145,15 @@ import {PostRepairSysApi} from "../../services/api"
 import axios from "axios"
 
 const SparkMD5 = require("spark-md5")
-import {GetComponents, PostUpgrade} from "../../services/admin";
+import {
+  GetComponents,
+  PostUpgrade,
+  GetSystemCpuMemDiskDetail,
+  PostDownContainerLogs,
+} from "../../services/admin";
 import {mapState} from "vuex";
+import Pie from "./pie";
+
 
 
 const columnsComponents = [
@@ -124,6 +167,13 @@ const columnsComponents = [
     title: '当前版本',
     dataIndex: 'current_version',
     scopedSlots: {customRender: 'current_version'},
+    ellipsis: true,
+    align: 'center'
+  },
+  {
+    title: '组件状态',
+    dataIndex: 'comps_state_describe',
+    scopedSlots: {customRender: 'comps_state_describe'},
     ellipsis: true,
     align: 'center'
   },
@@ -142,9 +192,9 @@ const columnsComponents = [
   },
 ]
 // import {logout} from '@/services/user'
-
 export default {
   name: "SystemManage",
+  components: { Pie},
   data() {
     return {
       columnsComponents,
@@ -153,16 +203,54 @@ export default {
       uploading: false,
       percent: 0,
       tableData: [],
-      pageLoadingTip: ""
+      pageLoadingTip: "",
+      loop: null,
+      cpuMemDisk: null,
     }
   },
   created() {
-    this.fetchComponents();
+    this.fetchComponents()
+    this.loop = setInterval(() => {
+      this.fetchComponents()
+    }, 10 * 1000)
+
+    this.fetchCpuMemDisk()
+    this.loop2 = setInterval(() => {
+      this.fetchCpuMemDisk()
+    }, 5 * 1000)
+  },
+  updated() {
+    // 表格斑马行显示
+    this.renderStripe()
+  },
+  destroyed() {
+    if (this.loop) {
+      console.log("clearInterval this.fetchComponents...")
+      clearInterval(this.loop)
+    }
+    if (this.loop2) {
+      console.log("clearInterval this.fetchComponents...")
+      clearInterval(this.loop2)
+    }
   },
   computed: {
     ...mapState('account', {currUser: 'user'}),
   },
   methods: {
+    // 表格斑马行显示
+    renderStripe() {
+      const table = document.getElementsByClassName('ant-table-row')
+      if (this.tableData.length > 0) {
+        this.tableData.map((row, index) => {
+          let rowElement = table[index]
+          if (row.comps_state === 0) {
+            rowElement.style.backgroundColor = '#ebface'
+          } else {
+            rowElement.style.backgroundColor = '#f6adad'
+          }
+        })
+      }
+    },
     cancel() {
 
     },
@@ -181,6 +269,19 @@ export default {
             up_version: arr.length > 0 ? arr[0] : item.current_version
           }
         });
+      })
+          .catch((err) => {
+            this.$message.warning(err.message);
+          })
+    },
+    fetchCpuMemDisk() {
+      GetSystemCpuMemDiskDetail().then((res) => {
+        if (res.data.code !== 200) {
+          this.$message.warning(res.data.msg)
+          return;
+        }
+        console.log(res.data)
+        this.cpuMemDisk = res.data.data
       })
           .catch((err) => {
             this.$message.warning(err.message);
@@ -205,6 +306,29 @@ export default {
       this.fileList = [...this.fileList, file];
       return false;
     },
+    handleClickLogsContainer(record) {
+      console.log(record)
+      this.handleClickDownFile(record)
+    },
+
+    async handleClickDownFile(item) {
+      PostDownContainerLogs(item.name)
+          .then((res) => {
+            let url = window.URL.createObjectURL(res.data);
+            let aLink = document.createElement("a");
+            aLink.style.display = "none";
+            aLink.href = url;
+            aLink.setAttribute("download", item.name + ".zip");
+            document.body.appendChild(aLink);
+            aLink.click();
+            document.body.removeChild(aLink); //下载完成移除元素
+            window.URL.revokeObjectURL(url); //释放掉blob对象
+          })
+          .catch((err) => {
+            this.$message.error(err.message);
+          })
+    },
+
     handleClickRepair() {
       this.loading = true
       this.pageLoadingTip = "正在进行全局组件修复，请稍后..."
@@ -217,6 +341,7 @@ export default {
             }
             this.loading = false
             this.$message.success(res.data.msg);
+            this.fetchComponents();
           })
           .catch((err) => {
             this.$message.warning(err.message)
@@ -344,5 +469,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>
