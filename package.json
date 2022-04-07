@@ -5,7 +5,7 @@
     }
   },
   "name": "vue-antd-admin",
-  "version": "5.9.10",
+  "version": "3.3.8",
   "homepage": "https://iczer.github.io/vue-antd-admin",
   "private": true,
   "scripts": {
