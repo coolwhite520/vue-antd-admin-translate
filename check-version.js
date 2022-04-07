@@ -49,7 +49,7 @@ inquirer
                 `\n${projectName} 版本号（项目根目录下的 package.json/version）更新成功，version: ${versionNew} ！`
               )
             );
-            let versionFile = `#!/bin/bash \r\nversion=${versionNew}`
+            let versionFile = `#!/bin/bash \r\nversion="${versionNew}"`
             fs.writeFileSync("./version.sh", versionFile)
             command(
               `git add package.json && git commit -m 'ci(package.json): 更新项目版本号为：${versionNew}'`
