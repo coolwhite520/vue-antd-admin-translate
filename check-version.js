@@ -3,6 +3,8 @@
 const inquirer = require("inquirer");
 const chalk = require("chalk");
 const { exec } = require("child_process");
+const fs = require("fs")
+
 const {
   name: projectName,
   version: versionCurrent,
@@ -48,9 +50,7 @@ inquirer
               )
             );
             let versionFile = `#!/bin/bash \r\nversion=${versionNew}`
-            command(
-                `echo ${versionFile} > ./version.sh`
-            )
+            fs.writeFileSync("./version.sh", versionFile)
             command(
               `git add package.json && git commit -m 'ci(package.json): 更新项目版本号为：${versionNew}'`
             );
