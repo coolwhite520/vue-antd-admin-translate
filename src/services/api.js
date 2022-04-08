@@ -29,6 +29,7 @@ module.exports = {
   GetSysInfoUrl: `${BASE_URL}/admin/sysinfo`,
   GetSystemCpuMemDiskDetailApi: `${BASE_URL}/admin/cpu_mem_disk`,
   PostDownContainerLogsApi: `${BASE_URL}/admin/container_logs`,
+  PostDownSysLogsApi: `${BASE_URL}/admin/sys_logs`,
   IpTableUrl: `${BASE_URL}/admin/ip_table`,
   IpTableTypeUrl: `${BASE_URL}/admin/ip_table_type`,
 

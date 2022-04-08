@@ -5,7 +5,7 @@
       <a-card>
         <a slot="extra" href="#">
           <a-tooltip title="可导出系统运行日志">
-            <a-button type="link" @click="handleClickRepair"><a-icon type="download" />导出系统日志</a-button>
+            <a-button type="link" @click="handleClickDownSysLog"><a-icon type="download" />导出系统日志</a-button>
           </a-tooltip>
         </a>
         <div slot="title">
@@ -156,6 +156,7 @@ import {
   PostUpgrade,
   GetSystemCpuMemDiskDetail,
   PostDownContainerLogs,
+  PostDownSysLogs,
 } from "../../services/admin";
 import {mapState} from "vuex";
 import Pie from "./pie";
@@ -312,11 +313,34 @@ export default {
       this.fileList = [...this.fileList, file];
       return false;
     },
+    handleClickDownSysLog() {
+      this.handleClickDownSysLogFile()
+    },
     handleClickLogsContainer(record) {
       console.log(record)
       this.handleClickDownFile(record)
     },
-
+    async handleClickDownSysLogFile() {
+      PostDownSysLogs()
+          .then((res) => {
+            let contentDisposition = res.headers['content-disposition']
+            console.log(contentDisposition)
+            let arr = contentDisposition.split(";")
+            let fileName = arr[1].split("=")[1]
+            let url = window.URL.createObjectURL(res.data);
+            let aLink = document.createElement("a");
+            aLink.style.display = "none";
+            aLink.href = url;
+            aLink.setAttribute("download", fileName);
+            document.body.appendChild(aLink);
+            aLink.click();
+            document.body.removeChild(aLink); //下载完成移除元素
+            window.URL.revokeObjectURL(url); //释放掉blob对象
+          })
+          .catch((err) => {
+            this.$message.error(err.message);
+          })
+    },
     async handleClickDownFile(item) {
       PostDownContainerLogs(item.name)
           .then((res) => {

@@ -12,7 +12,8 @@ import {
     GetSysInfoUrl,
     IpTableUrl,
     GetAllTransRecordsApi,
-    PostDownContainerLogsApi
+    PostDownContainerLogsApi,
+    PostDownSysLogsApi
 } from '@/services/api'
 
 import {request, METHOD,} from '@/utils/request'
@@ -35,6 +36,10 @@ export async function GetSystemCpuMemDiskDetail() {
 
 export async function PostDownContainerLogs(containerName) {
     return request(PostDownContainerLogsApi, METHOD.POST, {name: containerName}, {responseType: 'blob'})
+}
+
+export async function PostDownSysLogs() {
+    return request(PostDownSysLogsApi, METHOD.POST, {}, {responseType: 'blob'})
 }
 
 export async function PostAddUser(obj) {
