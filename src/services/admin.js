@@ -4,7 +4,7 @@ import {
     PostAddUserApi,
     PostModifyUserPwdApi,
     GetComponentsApi,
-    GetSystemCpuMemDiskDetailApi,
+    GetSystemCpuMemIoDetailApi,
     DeleteUserApi,
     PostUpgradeApi,
     PostModifyUserMarkApi,
@@ -30,8 +30,8 @@ export async function GetComponents() {
     return request(GetComponentsApi, METHOD.GET)
 }
 
-export async function GetSystemCpuMemDiskDetail() {
-    return request(GetSystemCpuMemDiskDetailApi, METHOD.GET)
+export async function GetSystemCpuMemIoDetail() {
+    return request(GetSystemCpuMemIoDetailApi, METHOD.GET)
 }
 
 export async function PostDownContainerLogs(containerName) {

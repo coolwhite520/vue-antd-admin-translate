@@ -1,7 +1,7 @@
 <template>
   <div
       :id="id"
-      :style="{ height: 250 + 'px', marginTop: 0 + 'px' }">
+      :style="{ height: 250 + 'px', marginTop: 0 + 'px',}">
   </div>
 </template>
 
@@ -11,7 +11,7 @@ const uuid = require("uuid");
 
 export default {
   props: ['title', 'percent'],
-  name: "pie",
+  name: "SysPieChart",
   data() {
     return {
       id: uuid.v1(),
@@ -21,12 +21,14 @@ export default {
   },
   watch: {
     percent() {
+      this.myChart.resize()
       this.draw()
     }
   },
   mounted() {
     let el = document.getElementById(this.id);
     this.myChart = this.$echarts.init(el);
+    window.onresize = this.myChart.resize;
     this.draw()
   },
   methods: {

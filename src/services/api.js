@@ -27,7 +27,7 @@ module.exports = {
   PostUpgradeApi: `${BASE_URL}/admin/upgrade`,
   GetAllTransRecordsApi: `${BASE_URL}/admin/all_records`,
   GetSysInfoUrl: `${BASE_URL}/admin/sysinfo`,
-  GetSystemCpuMemDiskDetailApi: `${BASE_URL}/admin/cpu_mem_disk`,
+  GetSystemCpuMemIoDetailApi: `${BASE_URL}/admin/cpu_mem_io`,
   PostDownContainerLogsApi: `${BASE_URL}/admin/container_logs`,
   PostDownSysLogsApi: `${BASE_URL}/admin/sys_logs`,
   IpTableUrl: `${BASE_URL}/admin/ip_table`,

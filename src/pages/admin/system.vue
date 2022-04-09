@@ -5,21 +5,35 @@
       <a-card>
         <a slot="extra" href="#">
           <a-tooltip title="可导出系统运行日志">
-            <a-button type="link" @click="handleClickDownSysLog"><a-icon type="download" />导出系统日志</a-button>
+            <a-button type="link" @click="handleClickDownSysLog">
+              <a-icon type="download"/>
+              导出系统日志
+            </a-button>
           </a-tooltip>
         </a>
         <div slot="title">
-          <a-icon type="dashboard" />&nbsp;系统仪表盘
+          <a-icon type="dashboard"/>&nbsp;系统仪表盘
         </div>
         <a-row v-if="this.cpuMemDisk">
           <a-col :span="8">
-            <pie title="cpu占用率" :percent="parseInt(this.cpuMemDisk.cpu_percent)"/>
+            <a-row>
+              <a-col :span="7">&nbsp;</a-col>
+              <a-col :span="12">
+                <sys-cpu-chart title="cpu使用率" :percent="parseInt(this.cpuMemDisk.cpu_percent)"/>
+              </a-col>
+              <a-col :span="5">&nbsp;</a-col>
+            </a-row>
           </a-col>
           <a-col :span="8">
-            <pie title="内存占用率" :percent="parseInt(this.cpuMemDisk.mem_percent)"/>
+            <sys-pie-chart title="内存占用率" :percent="parseInt(this.cpuMemDisk.mem_percent)"/>
           </a-col>
           <a-col :span="8">
-            <pie title="磁盘占用率" :percent="parseInt(this.cpuMemDisk.disk_percent)"/>
+            <sys-bar-chat title="磁盘IO"
+                          :io_read_bytes="this.cpuMemDisk.io_read_bytes"
+                          :io_write_bytes="this.cpuMemDisk.io_write_bytes"
+                          :io_read_bytes_str="this.cpuMemDisk.io_read_bytes_str"
+                          :io_write_bytes_str="this.cpuMemDisk.io_write_bytes_str"
+            />
           </a-col>
         </a-row>
       </a-card>
@@ -30,7 +44,10 @@
         </div>
         <a slot="extra" href="#">
           <a-tooltip title="可自动修复运行状态不佳的组件">
-            <a-button type="link" @click="handleClickRepair"><a-icon type="tool" />组件自动修复</a-button>
+            <a-button type="link" @click="handleClickRepair">
+              <a-icon type="tool"/>
+              组件自动修复
+            </a-button>
           </a-tooltip>
         </a>
         <a-table :scroll="{ y: 800 }"
@@ -42,7 +59,7 @@
                  size="small"
         >
           <template slot="comps_state_describe" slot-scope="text,record">
-            <div v-if="record.comps_state === 0">
+            <div v-if="record.comps_state === 0" style="color: green; font-weight: bold">
               <a-icon type="sync" spin/>
               {{ text }}
             </div>
@@ -83,7 +100,7 @@
               </a-popconfirm>
               <a-tooltip title="导出组件日志">
                 <a-button style="margin-left: 20px" size="small" @click="handleClickLogsContainer(record)">
-                  <a-icon type="download" />
+                  <a-icon type="download"/>
                 </a-button>
               </a-tooltip>
             </div>
@@ -154,13 +171,14 @@ const SparkMD5 = require("spark-md5")
 import {
   GetComponents,
   PostUpgrade,
-  GetSystemCpuMemDiskDetail,
+  GetSystemCpuMemIoDetail,
   PostDownContainerLogs,
   PostDownSysLogs,
 } from "../../services/admin";
 import {mapState} from "vuex";
-import Pie from "./pie";
-
+import SysPieChart from "./SysPieChart";
+import SysBarChat from "./SysBarChart";
+import SysCpuChart from "./SysCpuChart";
 
 
 const columnsComponents = [
@@ -201,7 +219,7 @@ const columnsComponents = [
 // import {logout} from '@/services/user'
 export default {
   name: "SystemManage",
-  components: { Pie},
+  components: {SysCpuChart, SysBarChat, SysPieChart},
   data() {
     return {
       columnsComponents,
@@ -221,9 +239,9 @@ export default {
       this.fetchComponents()
     }, 10 * 1000)
 
-    this.fetchCpuMemDisk()
+    this.fetchCpuMemIo()
     this.loop2 = setInterval(() => {
-      this.fetchCpuMemDisk()
+      this.fetchCpuMemIo()
     }, 5 * 1000)
   },
   updated() {
@@ -281,8 +299,8 @@ export default {
             this.$message.warning(err.message);
           })
     },
-    fetchCpuMemDisk() {
-      GetSystemCpuMemDiskDetail().then((res) => {
+    fetchCpuMemIo() {
+      GetSystemCpuMemIoDetail().then((res) => {
         if (res.data.code !== 200) {
           this.$message.warning(res.data.msg)
           return;
