@@ -5,7 +5,7 @@
       <a-card>
         <a slot="extra" href="#">
           <a-tooltip title="可导出系统运行日志">
-            <a-button type="link" @click="handleClickDownSysLog">
+            <a-button type="link" @click="handleClickDownSysLog" :loading="loadingBtn">
               <a-icon type="download"/>
               导出系统日志
             </a-button>
@@ -99,7 +99,7 @@
                 </a-tooltip>
               </a-popconfirm>
               <a-tooltip title="导出组件日志">
-                <a-button style="margin-left: 20px" size="small" @click="handleClickLogsContainer(record)">
+                <a-button style="margin-left: 20px" size="small" @click="handleClickLogsContainer(record)" :loading="loadingBtn">
                   <a-icon type="download"/>
                 </a-button>
               </a-tooltip>
@@ -231,6 +231,7 @@ export default {
       pageLoadingTip: "",
       loop: null,
       cpuMemDisk: null,
+      loadingBtn: false,
     }
   },
   created() {
@@ -335,10 +336,10 @@ export default {
       this.handleClickDownSysLogFile()
     },
     handleClickLogsContainer(record) {
-      console.log(record)
       this.handleClickDownFile(record)
     },
     async handleClickDownSysLogFile() {
+      this.loadingBtn = true;
       PostDownSysLogs()
           .then((res) => {
             let contentDisposition = res.headers['content-disposition']
@@ -354,12 +355,15 @@ export default {
             aLink.click();
             document.body.removeChild(aLink); //下载完成移除元素
             window.URL.revokeObjectURL(url); //释放掉blob对象
+            this.loadingBtn = false;
           })
           .catch((err) => {
             this.$message.error(err.message);
+            this.loadingBtn = false;
           })
     },
     async handleClickDownFile(item) {
+      this.loadingBtn = true;
       PostDownContainerLogs(item.name)
           .then((res) => {
             let url = window.URL.createObjectURL(res.data);
@@ -371,9 +375,11 @@ export default {
             aLink.click();
             document.body.removeChild(aLink); //下载完成移除元素
             window.URL.revokeObjectURL(url); //释放掉blob对象
+            this.loadingBtn = false;
           })
           .catch((err) => {
             this.$message.error(err.message);
+            this.loadingBtn = false;
           })
     },
 
