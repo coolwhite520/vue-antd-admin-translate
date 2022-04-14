@@ -72,7 +72,7 @@
               {{ text }}
             </div>
             <div v-else>
-              <a-icon type="question" />
+              <a-icon type="question"/>
               {{ text }}
             </div>
           </template>
