@@ -67,8 +67,12 @@
               <a-icon type="stop"/>
               {{ text }}
             </div>
-            <div v-else>
+            <div v-else-if="record.comps_state === 2">
               <a-icon type="disconnect"/>
+              {{ text }}
+            </div>
+            <div v-else>
+              <a-icon type="question" />
               {{ text }}
             </div>
           </template>
