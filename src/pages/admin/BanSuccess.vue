@@ -2,14 +2,14 @@
   <div id="my-node" style="margin-top: 30px;">
     <a-result
         status="success"
-        title="现有授权已失效，您可以导入新授权"
+        title="现有授权已失效，您可以导入新的授权"
         :sub-title="subTitle"
     >
       <template #extra>
-        <a-button key="buy" @click="handleClickDownProof" type="primary">
-          <a-icon type="copy" /> 凭证下载
-        </a-button>
-        <a-button key="console"  @click="handleClickJumpActivationPage">
+<!--        <a-button key="buy" @click="handleClickDownProof" type="primary">-->
+<!--          <a-icon type="copy" /> 凭证下载-->
+<!--        </a-button>-->
+        <a-button key="console"  @click="handleClickJumpActivationPage" type="primary">
           <a-icon type="rollback" /> 导入新授权
         </a-button>
       </template>
@@ -73,10 +73,6 @@ export default {
       });
     },
     handleClickJumpActivationPage() {
-      if (!this.clickPrintPngAndDown) {
-        this.$message.warning("请先点击左侧的【凭证下载】按钮，然后进行后续操作。")
-        return
-      }
       this.$router.push({path: "/activation",  query: { sn: this.sn }})
     }
   }
