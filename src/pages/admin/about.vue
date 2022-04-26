@@ -20,12 +20,32 @@
       <div style="margin-top: 20px">
         支持的语言：<b>{{ support_lang_str }}</b>
       </div>
+      <a-row style="margin-top: 20px">
+        <a-popconfirm
+            title="导入新的授权将使得现有授权永久失效，确定这样做吗？"
+            ok-text="确定"
+            cancel-text="取消"
+            @confirm="handleClickBanCurrActivation"
+            @cancel="() => {}"
+        >
+            <a-button type="danger">
+              <a-icon type="import" />
+              导入新授权
+            </a-button>
+        </a-popconfirm>
+      </a-row>
+      <div style="margin-top: 10px">
+        <a-tag color="orange" closable>
+          导入新授权会使得当前授权在本机永久失效，请谨慎操作！
+        </a-tag>
+      </div>
     </a-card>
   </div>
 </template>
 
 <script>
 import {GetSysInfo} from "../../services/admin";
+import {PostBan} from "../../services/activation";
 import moment from 'moment'
 import {mapGetters} from "vuex";
 
@@ -37,7 +57,8 @@ export default {
       sn: "",
       created_at: "",
       use_time_span: "",
-      support_lang_str: ""
+      support_lang_str: "",
+      loading: false,
     }
   },
   computed: {
@@ -64,6 +85,30 @@ export default {
     handleClickCopy() {
       this.$copy(this.sn)
       this.$message.success("成功复制到剪贴板")
+    },
+    handleClickBanCurrActivation() {
+      PostBan()
+          .then((res) => {
+            if (res.data.code !== 200) {
+              this.$message.warning(res.data.msg);
+              return;
+            }
+            this.$message.success(res.data.msg)
+            const { sn, id } = res.data.data
+            this.$router.push({path: "/ban",  query: { sn, id}})
+          })
+          .catch((err) => {
+            this.$message.warning(err)
+          })
+    },
+    handleClickImportActivation() {
+      console.log("haha")
+      this.$router.push({
+        path: '/activation',
+        query: {
+          sn:this.sn
+        }
+      })
     }
   }
 }

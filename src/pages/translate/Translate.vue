@@ -151,34 +151,38 @@ export default {
     ...mapState('account', {currUser: 'user'}),
   },
   async created() {
-    await this.fetchSupportLangList();
-    await this.fetchAllLangList();
-    await this.fetchUserFavor();
-    this.groupByCharLangList = this.makeLangListGroupBy(this.allLanguageList);
+    try {
+      await this.fetchSupportLangList();
+      await this.fetchAllLangList();
+      await this.fetchUserFavor();
+      this.groupByCharLangList = this.makeLangListGroupBy(this.allLanguageList);
 
-    let favorList = this.userFavorLangs.map((el) => {
-      let l = this.allLanguageList.filter(a => a.en_name === el)
-      if (l.length > 0) {
-        return l[0];
-      } else {
-        return {en_name: ""}
-      }
-    }).filter((b) => b.en_name !== "");
+      let favorList = this.userFavorLangs.map((el) => {
+        let l = this.allLanguageList.filter(a => a.en_name === el)
+        if (l.length > 0) {
+          return l[0];
+        } else {
+          return {en_name: ""}
+        }
+      }).filter((b) => b.en_name !== "");
 
-    if (this.languageList.length > 3) {
-      if (favorList.length === 3) {
-        this.srcLanguageList = favorList.slice(0,3)
-        this.desLanguageList = favorList.slice(0,3)
+      if (this.languageList.length > 3) {
+        if (favorList.length === 3) {
+          this.srcLanguageList = favorList.slice(0,3)
+          this.desLanguageList = favorList.slice(0,3)
+        } else {
+          this.srcLanguageList = this.languageList.slice(0,3)
+          this.desLanguageList = this.languageList.slice(0,3)
+        }
       } else {
-        this.srcLanguageList = this.languageList.slice(0,3)
-        this.desLanguageList = this.languageList.slice(0,3)
+        this.srcLanguageList = this.languageList
+        this.desLanguageList = this.languageList
       }
-    } else {
-      this.srcLanguageList = this.languageList
-      this.desLanguageList = this.languageList
+      this.srcLang = this.srcLanguageList[0].en_name
+      this.desLang = this.desLanguageList[1].en_name
+    } catch (e) {
+      console.log(e)
     }
-    this.srcLang = this.srcLanguageList[0].en_name
-    this.desLang = this.desLanguageList[1].en_name
   },
   mounted() {
 

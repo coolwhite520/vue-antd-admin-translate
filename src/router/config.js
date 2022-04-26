@@ -66,6 +66,13 @@ const options = {
           },
           component: () => import('@/pages/self'),
         },
+        {
+          path: '/ban',
+          meta: {
+            invisible: true,
+          },
+          component: () => import('@/pages/admin/BanSuccess.vue'),
+        },
       ]
     },
   ]

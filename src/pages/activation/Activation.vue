@@ -5,14 +5,16 @@
     </a-col>
     <a-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
       <div v-if="!activationOk">
-        <span>平台序列号：</span> <b>{{sn}}</b>&nbsp;
+        <span>平台序列号：</span> <b>{{ sn }}</b>&nbsp;
         <a-tooltip>
           <template slot="title">
             <span>点击复制机器码</span>
           </template>
           <a-button type="primary" icon="copy" size="small" @click="handleClickCopy"/>
         </a-tooltip>
-        <p>请复制并发送给激活方，并告知您想要支持的语言种类。</p>
+        <div style="margin-top: 10px">
+          <a-tag color="orange">请将平台序列号和凭证一并发送给激活方，并告知您想要支持的语言种类。</a-tag>
+        </div>
         <div style="margin-top: 40px;">
           <a-textarea
               style="width: 100%"
@@ -22,7 +24,12 @@
           />
         </div>
         <div style="margin-top: 20px;">
-          <a-button type="primary" style="width: 100%" size="large" @click="handleClickActivation">立即激活</a-button>
+          <a-button style="width: 29%" size="large" @click="handleClickDownProof" type="danger">
+            <a-icon type="crown"/>
+            凭证下载
+          </a-button>
+          &nbsp;
+          <a-button type="primary" style="width: 70%" size="large" @click="handleClickActivation">立即激活</a-button>
         </div>
       </div>
     </a-col>
@@ -33,7 +40,7 @@
 </template>
 
 <script>
-import {PostActivation} from "../../services/activation";
+import {PostActivation, PostActivationProof} from "../../services/activation";
 
 
 export default {
@@ -46,6 +53,23 @@ export default {
     }
   },
   methods: {
+    handleClickDownProof() {
+      PostActivationProof()
+          .then((res) => {
+            let url = window.URL.createObjectURL(res.data);
+            let aLink = document.createElement("a");
+            aLink.style.display = "none";
+            aLink.href = url;
+            aLink.setAttribute("download", "proof.txt");
+            document.body.appendChild(aLink);
+            aLink.click();
+            document.body.removeChild(aLink); //下载完成移除元素
+            window.URL.revokeObjectURL(url); //释放掉blob对象
+          })
+          .catch((err) => {
+            this.$message.error(err.message);
+          })
+    },
     handleClickCopy() {
       this.$copy(this.sn)
       this.$message.success("成功复制到剪贴板")
@@ -60,18 +84,18 @@ export default {
         keystore: this.keystore
       }
       PostActivation(obj)
-      .then(res => {
-        console.log(res)
-        if (res.data.code !== 200) {
-          this.$message.warning(res.data.msg);
-          this.keystore = ""
-          return;
-        }
-        this.$router.push("/systemAvailable")
-      })
-      .catch(err => {
-        this.$message.error(err.message)
-      })
+          .then(res => {
+            console.log(res)
+            if (res.data.code !== 200) {
+              this.$message.warning(res.data.msg);
+              this.keystore = ""
+              return;
+            }
+            this.$router.push("/systemAvailable")
+          })
+          .catch(err => {
+            this.$message.error(err.message)
+          })
     }
   }
 }

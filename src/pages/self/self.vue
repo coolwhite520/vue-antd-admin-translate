@@ -107,10 +107,15 @@ export default {
     ...mapState('account', {currUser: 'user'})
   },
   async mounted() {
-    const {pwdValidator} = this.currUser
-    this.pwdValidator = pwdValidator;
-    await this.fetchSupportLangList()
-    await this.fetchUserFavor()
+    try {
+      const {pwdValidator} = this.currUser
+      this.pwdValidator = pwdValidator;
+      await this.fetchSupportLangList()
+      await this.fetchUserFavor()
+    } catch (e) {
+      console.log(e)
+    }
+
   },
   methods: {
     filterOption(input, option) {

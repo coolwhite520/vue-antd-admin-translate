@@ -7,6 +7,8 @@ module.exports = {
   LOGOFF: `${BASE_URL}/user/logoff`,
   PostModifyPasswordAPi: `${BASE_URL}/user/password`,
   PostActivationApi:  `${BASE_URL}/activation`,
+  PostActivationProofApi:  `${BASE_URL}/activation/proof`,
+  PostBanApi:  `${BASE_URL}/activation/ban`,
   GetTransLangListApi: `${BASE_URL}/translate/lang`,
   GetAllLangListApi: `${BASE_URL}/translate/allLang`,
   PostTransContentApi: `${BASE_URL}/translate/content`,
