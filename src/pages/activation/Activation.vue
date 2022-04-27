@@ -60,7 +60,7 @@ export default {
             let aLink = document.createElement("a");
             aLink.style.display = "none";
             aLink.href = url;
-            aLink.setAttribute("download", "proof.txt");
+            aLink.setAttribute("download", `凭证_${this.sn.slice(0,8)}.txt`);
             document.body.appendChild(aLink);
             aLink.click();
             document.body.removeChild(aLink); //下载完成移除元素

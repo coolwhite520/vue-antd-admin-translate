@@ -1,6 +1,9 @@
 <template>
   <div style="margin-top: 50px;">
-    <a-card title="授权信息">
+    <a-card >
+      <template slot="title">
+        <span style="color: gold"><a-icon type="audit" /></span> 授权信息
+      </template>
       <div>
         当前系统版本：<b>v{{ user.sysVer }}</b>
       </div>
@@ -74,7 +77,7 @@ export default {
           console.log(res.data)
           const {user_name, sn, use_time_span, created_at, support_lang_list} = res.data.data
           this.sn = sn
-          this.created_at = moment(created_at * 1000).format("YYYY-MM-DD")
+          this.created_at = new Date(created_at * 1000).format("yyyy-MM-dd hh:mm:ss"); //moment(created_at * 1000).format("YYYY-MM-DD hh:mm:ss")
           this.user_name = user_name
           let month = moment.duration(parseInt(use_time_span), "seconds").asMonths().toFixed()
           this.use_time_span = month > 240 ? `永久` : `${month} 个月`
@@ -82,6 +85,7 @@ export default {
         })
   },
   methods: {
+
     handleClickCopy() {
       this.$copy(this.sn)
       this.$message.success("成功复制到剪贴板")
