@@ -45,7 +45,7 @@
     </a-card>
 
     <a-card style="margin-top: 20px;">
-      <history-file :langList="langList" :hisType="3" :columns="columnsAllFile" :tableHeight="300" ref="historyChild"/>
+      <history-file v-bind="$attrs" :hisType="3" :columns="columnsAllFile" :tableHeight="300" ref="historyChild"/>
     </a-card>
   </div>
 </template>
@@ -104,7 +104,6 @@ const FileMaxLen = 30; //MB
 export default {
   name: "TranslateFile",
   components: {HistoryFile},
-  props: ["langList"],
   data() {
     return {
       columnsAllFile,
@@ -114,8 +113,10 @@ export default {
         "Access-Control-Allow-Origin": "*",
       },
       tableData: [],
-
     }
+  },
+  mounted() {
+
   },
   methods: {
     filterOption(input, option) {

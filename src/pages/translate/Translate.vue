@@ -86,10 +86,10 @@
               </template>
             </div>
             <div v-else-if="radioType==='file'">
-              <translate-file :langList="languageList"/>
+              <translate-file :langList="sortedLanguageList"/>
             </div>
             <div v-else-if="radioType==='history'">
-              <history :langList="languageList"/>
+              <history :langList="sortedLanguageList"/>
             </div>
           </template>
         </a-card>
@@ -145,10 +145,15 @@ export default {
       showSrcLangTable: false,
       showDesLangTable: false,
       userFavorLangs: [],
+      favorList: [],
     }
   },
   computed: {
     ...mapState('account', {currUser: 'user'}),
+    sortedLanguageList() {
+      let sortedList =  _.unionBy(this.favorList, this.languageList, 'en_name');
+      return sortedList
+    },
   },
   async created() {
     try {
@@ -157,8 +162,8 @@ export default {
       await this.fetchUserFavor();
       this.groupByCharLangList = this.makeLangListGroupBy(this.allLanguageList);
 
-      let favorList = this.userFavorLangs.map((el) => {
-        let l = this.allLanguageList.filter(a => a.en_name === el)
+      this.favorList = this.userFavorLangs.map((el) => {
+        let l = this.languageList.filter(a => a.en_name === el)
         if (l.length > 0) {
           return l[0];
         } else {
@@ -167,9 +172,9 @@ export default {
       }).filter((b) => b.en_name !== "");
 
       if (this.languageList.length > 3) {
-        if (favorList.length === 3) {
-          this.srcLanguageList = favorList.slice(0,3)
-          this.desLanguageList = favorList.slice(0,3)
+        if (this.favorList.length >= 3) {
+          this.srcLanguageList = this.favorList.slice(0,3)
+          this.desLanguageList = this.favorList.slice(0,3)
         } else {
           this.srcLanguageList = this.languageList.slice(0,3)
           this.desLanguageList = this.languageList.slice(0,3)
@@ -293,7 +298,7 @@ export default {
             return
           }
           if (res.data.data.length > 0) {
-            this.userFavorLangs = res.data.data.split(",").slice(0, 3)
+            this.userFavorLangs = res.data.data.split(",")
           } else {
             this.userFavorLangs = []
           }

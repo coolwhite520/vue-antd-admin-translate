@@ -57,28 +57,30 @@
         <a-icon type="sort-descending"/>&nbsp;常用语言排序
       </div>
       <a-row v-show="languageList.length > 3 && pwdValidator.length === 0 ">
-        <a-col :xs="0" :sm="0" :md="8" :lg="8" :xl="8">
+        <a-col :xs="0" :sm="0" :md="6" :lg="6" :xl="6">
           &nbsp;
         </a-col>
-        <a-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8">
-          <div style="margin-bottom: 10px;color: gray">常用语言序列会显示在翻译页面的滚动菜单上，便于您的操作。[注：只取前三项]</div>
-          <a-select
-              mode="multiple"
-              v-model="userFavorLangs"
-              style="width: 100%"
-              placeholder="请选择常用语言，此序列只取前三个选项。"
-              @change="handleChange"
-              :allowClear="true"
+        <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+          <div style="margin-bottom: 10px;color: gray;text-align: center;">常用语言排序的设定会便于您进行翻译操作。</div>
+          <a-transfer
+              :titles="['所有语言', '常用语言']"
+              :data-source="dataSource"
+              show-search
               :filter-option="filterOption"
-          >
-            <a-select-option v-for="item in languageList" :key="item.en_name">
-              {{ item.cn_name }}
-            </a-select-option>
-          </a-select>
+              :target-keys="userFavorLangs"
+              :render="item => item.title"
+              @change="handleChange"
+              :list-style="{
+                width: '46%',
+                height: '300px',
+              }"
+          />
+
+
           <a-button style="margin-top: 20px;width: 100%" type="primary" @click="handleClickSureFavor">确定</a-button>
 
         </a-col>
-        <a-col :xs="0" :sm="0" :md="8" :lg="8" :xl="8">
+        <a-col :xs="0" :sm="0" :md="6" :lg="6" :xl="6">
           &nbsp;
         </a-col>
       </a-row>
@@ -104,7 +106,16 @@ export default {
     };
   },
   computed: {
-    ...mapState('account', {currUser: 'user'})
+    ...mapState('account', {currUser: 'user'}),
+    dataSource() {
+      return this.languageList.map(item => {
+        return {
+          key: item.en_name,
+          title: item.cn_name,
+          description: item.cn_name,
+        }
+      })
+    }
   },
   async mounted() {
     try {
@@ -118,22 +129,16 @@ export default {
 
   },
   methods: {
-    filterOption(input, option) {
+    filterOption(inputValue, option) {
       let reg = /^[a-zA-Z][a-zA-Z0-9_]*$/
-      if (reg.test(input)) {
-        let text = option.componentOptions.children[0].text;
+      if (reg.test(inputValue)) {
+        let text = option.description;
         let pinYin = this.$Convert2Pinyin(text)
-        return pinYin.startsWith(input);
+        return pinYin.startsWith(inputValue);
       }
-      return (
-          option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
-      );
+      return option.description.indexOf(inputValue) > -1;
     },
     handleClickSureFavor() {
-      if (this.userFavorLangs.length < 3) {
-        this.$message.warning("您选择的项目数量不够三种，请继续添加。")
-        return
-      }
       AddUserNewFavor(this.userFavorLangs.join(","))
           .then((res) => {
             if (res.data.code !== 200) {
@@ -147,8 +152,13 @@ export default {
             this.$message.warning(err)
           });
     },
-    handleChange(value) {
-      this.userFavorLangs = value
+    handleChange(targetKeys, direction, moveKeys) {
+      if(direction === 'right') {
+        this.userFavorLangs = this.userFavorLangs.concat(moveKeys)
+      } else {
+        this.userFavorLangs = targetKeys
+      }
+      console.log(this.userFavorLangs)
     },
     async fetchSupportLangList() {
       return new Promise((resolve, reject) => {
@@ -181,7 +191,7 @@ export default {
             return
           }
           if (res.data.data.length > 0) {
-            this.userFavorLangs = res.data.data.split(",").slice(0, 3)
+            this.userFavorLangs = res.data.data.split(",")
           } else {
             this.userFavorLangs = []
           }

@@ -167,6 +167,9 @@ export default {
   created() {
     this.fetchTableData()
   },
+  mounted() {
+
+  },
   destroyed() {
     if (this.loop) clearInterval(this.loop)
   },
