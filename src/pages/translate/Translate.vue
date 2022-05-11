@@ -86,10 +86,10 @@
               </template>
             </div>
             <div v-else-if="radioType==='file'">
-              <translate-file :langList="sortedLanguageList"/>
+              <translate-file :langList="unionList"/>
             </div>
             <div v-else-if="radioType==='history'">
-              <history :langList="sortedLanguageList"/>
+              <history :langList="unionList"/>
             </div>
           </template>
         </a-card>
@@ -150,9 +150,9 @@ export default {
   },
   computed: {
     ...mapState('account', {currUser: 'user'}),
-    sortedLanguageList() {
-      let sortedList =  _.unionBy(this.favorList, this.languageList, 'en_name');
-      return sortedList
+    unionList() {
+      let _unionList =  _.unionBy(this.favorList, this.languageList, 'en_name');
+      return _unionList
     },
   },
   async created() {
@@ -172,13 +172,9 @@ export default {
       }).filter((b) => b.en_name !== "");
 
       if (this.languageList.length > 3) {
-        if (this.favorList.length >= 3) {
-          this.srcLanguageList = this.favorList.slice(0,3)
-          this.desLanguageList = this.favorList.slice(0,3)
-        } else {
-          this.srcLanguageList = this.languageList.slice(0,3)
-          this.desLanguageList = this.languageList.slice(0,3)
-        }
+        let unionList =  _.unionBy(this.favorList, this.languageList, 'en_name');
+          this.srcLanguageList = unionList.slice(0,3)
+          this.desLanguageList = unionList.slice(0,3)
       } else {
         this.srcLanguageList = this.languageList
         this.desLanguageList = this.languageList
